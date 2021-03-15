@@ -11,6 +11,11 @@ const routes: Array<RouteConfig> = [
     component: Home
   },
   {
+    path: '/about',
+    name: 'about',
+    component: () => import('../views/About.vue')
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login.vue')
@@ -19,6 +24,16 @@ const routes: Array<RouteConfig> = [
     path: '/listPost',
     name: 'listPost',
     component: () => import('../views/listPost.vue')
+  },
+  {
+    path: '/statSales',
+    name: 'statSales',
+    component: () => import('../views/statSales.vue')
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: () => import('../views/settings.vue')
   }
 ]
 

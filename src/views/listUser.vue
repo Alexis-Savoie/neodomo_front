@@ -26,8 +26,7 @@
                   <v-icon @click="editItem()">mdi-refresh</v-icon>
                   <v-row ></v-row>
                   <v-row >
-                  <v-spacer></v-spacer>
-                  <v-spacer></v-spacer>
+                  
                   <!-- Search text box -->
                   <v-text-field
                     solo
@@ -43,25 +42,44 @@
                   <v-text-field
                     solo
                     dense
-                    label="Contenu"
+                    label="Créateur"
                     rounded
                     class="shrink"
                     height="15"
                     style="maxWidth: 120px; font-size: 12px"
                   ></v-text-field>
 
+                  <!-- Search text box -->
+
+                  <v-text-field
+                    solo
+                    dense
+                    label="Créateur"
+                    rounded
+                    class="shrink"
+                    height="15"
+                    style="maxWidth: 120px; font-size: 12px"
+                  ></v-text-field>
 
                   <v-select
                     :items="itemsSelect"
-                    label="Signalement"
+                    label="Outlined style"
                     dense
                     outlined
-                    style="maxWidth: 150px;"
+                    style="maxWidth: 120px;"
                   ></v-select>
 
+                  <v-select
+                    :items="itemsSelect"
+                    label="Outlined style"
+                    dense
+                    outlined
+                    style="maxWidth: 120px;"
+                  ></v-select>
 
                   <!-- date picker -->
                   <v-col style="padding-top: 0;">
+
                     <v-menu
                       ref="menu"
                       dense
@@ -80,7 +98,6 @@
                           label="Créer de"
                           prepend-icon="mdi-calendar"
                           readonly
-                          dense
                           v-bind="attrs"
                           v-on="on"
                           style="padding-top: 0;"
@@ -103,6 +120,8 @@
 
                    <v-menu
                       ref="menu"
+                      dense
+                      rounded
                       v-model="menu"
                       :close-on-content-click="false"
                       :return-value.sync="date"
@@ -112,10 +131,9 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="date"
-                          label="Créer à"
+                          label="Créer de"
                           prepend-icon="mdi-calendar"
                           readonly
-                          dense
                           v-bind="attrs"
                           v-on="on"
                           style="padding-top: 0;"
@@ -136,7 +154,83 @@
                       </v-date-picker>
                     </v-menu>
                   </v-col>
-                  
+                  <!-- date picker -->
+                  <v-col style="padding-top: 0;">
+
+                    <v-menu
+                      ref="menu"
+                      dense
+                      rounded
+                      v-model="menu"
+                      :close-on-content-click="false"
+                      :return-value.sync="date"
+                      transition="scale-transition"
+                      offset-y
+                      
+
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="date"
+                          label="Créer de"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          style="padding-top: 0;"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="date" no-title scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="menu = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.menu.save(date)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
+
+                   <v-menu
+                      ref="menu"
+                      dense
+                      rounded
+                      v-model="menu"
+                      :close-on-content-click="false"
+                      :return-value.sync="date"
+                      transition="scale-transition"
+                      offset-y
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="date"
+                          label="Créer de"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          style="padding-top: 0;"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="date" no-title scrollable>
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="menu = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.menu.save(date)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-menu>
+                  </v-col>
                 </v-row>
               </v-container>
             </template>

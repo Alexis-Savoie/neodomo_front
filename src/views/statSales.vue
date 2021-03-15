@@ -1,7 +1,7 @@
 <template>
   <v-app class="black">
     <v-app-bar app flat color="#E5E5E5">
-      <v-toolbar-title style="padding-left: 2em">Posts</v-toolbar-title>
+      <v-toolbar-title style="padding-left: 2em">Ventes</v-toolbar-title>
       <v-spacer></v-spacer>
       <div :class="`text-${model}`">emailAdmin@mail.com</div>
     </v-app-bar>
@@ -11,55 +11,32 @@
     <v-main style="background-color: #e5e5e5">
       <v-container fill-height>
         <v-card class="ma-auto" align="center" justify="center" width="100%">
-          <v-data-table
-            :headers="headers"
-            :items="items"
-            :items-per-page="8"
-            class="elevation-1"
-          >
+            <div class="small">
+              <line-chart :chart-data="datacollection"></line-chart>
+              <button @click="fillData()">Randomize</button>
+            </div>
+          
             <!-- Top of the data table (Toolbar) -->
 
             <template v-slot:top>
               <v-container fill-height>
      
-                  <v-toolbar-title style="padding-right: 0.5em">Liste des posts</v-toolbar-title>
-                  <v-icon @click="editItem()">mdi-refresh</v-icon>
+                  <v-toolbar-title style="padding-right: 0.5em">Statistiques ventes</v-toolbar-title>
                   <v-row ></v-row>
                   <v-row >
-                  <v-spacer></v-spacer>
-                  <v-spacer></v-spacer>
-                  <!-- Search text box -->
-                  <v-text-field
-                    solo
-                    dense
-                    label="Créateur"
-                    rounded
-                    class="shrink"
-                    height="15"
-                    style="maxWidth: 120px; font-size: 12px"
-                  ></v-text-field>
-
-                  <!-- Search text box -->
-                  <v-text-field
-                    solo
-                    dense
-                    label="Contenu"
-                    rounded
-                    class="shrink"
-                    height="15"
-                    style="maxWidth: 120px; font-size: 12px"
-                  ></v-text-field>
-
-
+                  
                   <v-select
                     :items="itemsSelect"
-                    label="Signalement"
+                    label="Produit"
                     dense
                     outlined
-                    style="maxWidth: 150px;"
+                    style="maxWidth: 232px; padding-left: 12px"
                   ></v-select>
+                  </v-row >
 
 
+
+                  <v-row >
                   <!-- date picker -->
                   <v-col style="padding-top: 0;">
                     <v-menu
@@ -77,7 +54,7 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="date"
-                          label="Créer de"
+                          label="Ventes du"
                           prepend-icon="mdi-calendar"
                           readonly
                           dense
@@ -100,7 +77,6 @@
                         </v-btn>
                       </v-date-picker>
                     </v-menu>
-
                    <v-menu
                       ref="menu"
                       v-model="menu"
@@ -112,7 +88,7 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="date"
-                          label="Créer à"
+                          label="Ventes au"
                           prepend-icon="mdi-calendar"
                           readonly
                           dense
@@ -136,6 +112,7 @@
                       </v-date-picker>
                     </v-menu>
                   </v-col>
+                  <v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col>
                   
                 </v-row>
               </v-container>
@@ -144,7 +121,7 @@
             <template v-slot:[`item.actions`]="{ item }">
               <v-icon small @click="editItem(item)">mdi-dots-horizontal</v-icon>
             </template>
-          </v-data-table>
+
         </v-card>
       </v-container>
     </v-main>
@@ -177,14 +154,18 @@ body {
 
 <script lang="ts">
 import navigationDrawer from "../components/navigationDrawer.vue";
+import LineChart from "../components/lineChart"
+import Vue from 'vue'
 
-export default {
+export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
+    LineChart
   },
-  data() {
+  data(): any {
     return {
+      datacollection: null,
       headers: [
         {
           text: "Post",
@@ -264,7 +245,32 @@ export default {
         },
       ],
       itemsSelect: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+      
     };
   },
-};
+    mounted () {
+      this.fillData()
+    },
+    methods: {
+      fillData () {
+        this.datacollection = {
+          labels: [this.getRandomInt(), this.getRandomInt()],
+          datasets: [
+            {
+              label: 'Data One',
+              backgroundColor: '#f87979',
+              data: [this.getRandomInt(), this.getRandomInt()]
+            }, {
+              label: 'Data One',
+              backgroundColor: '#f87979',
+              data: [this.getRandomInt(), this.getRandomInt()]
+            }
+          ]
+        }
+      },
+      getRandomInt () {
+        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+      }
+    }
+});
 </script>
