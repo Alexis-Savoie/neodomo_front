@@ -11,117 +11,125 @@
     <v-main style="background-color: #e5e5e5">
       <v-container fill-height>
         <v-card class="ma-auto" align="center" justify="center" width="100%">
-            <div class="small">
-              <line-chart :chart-data="datacollection"></line-chart>
-              <button @click="fillData()">Randomize</button>
-            </div>
-          
-            <!-- Top of the data table (Toolbar) -->
+          <v-container fill-height>
+            <v-row>
+              <v-col>
+                <v-toolbar-title class="text-left" style="padding-left: 0"
+                  >Statistiques ventes</v-toolbar-title
+                >
+              </v-col>
+            </v-row>
 
-            <template v-slot:top>
-              <v-container fill-height>
-     
-                  <v-toolbar-title style="padding-right: 0.5em">Statistiques ventes</v-toolbar-title>
-                  <v-row ></v-row>
-                  <v-row >
-                  
-                  <v-select
-                    :items="itemsSelect"
-                    label="Produit"
-                    dense
-                    outlined
-                    style="maxWidth: 232px; padding-left: 12px"
-                  ></v-select>
-                  </v-row >
+            <v-row><v-divider></v-divider></v-row>
+            <!--#region Selector  -->
 
+            <v-row>
+              <v-col>
+                <v-select
+                  :items="itemsSelect"
+                  label="Produit"
+                  dense
+                  outlined
+                  style="maxwidth: 232px; padding-left: 12px"
+                ></v-select>
+              </v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col>
+            </v-row>
 
-
-                  <v-row >
-                  <!-- date picker -->
-                  <v-col style="padding-top: 0;">
-                    <v-menu
-                      ref="menu"
+            <v-row>
+              <!-- date picker -->
+              <v-col style="padding-top: 0">
+                <v-menu
+                  ref="menu"
+                  dense
+                  rounded
+                  v-model="menu"
+                  :close-on-content-click="false"
+                  :return-value.sync="date"
+                  transition="scale-transition"
+                  offset-y
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="date"
+                      label="Ventes du"
+                      prepend-icon="mdi-calendar"
+                      readonly
                       dense
-                      rounded
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
-                      
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="date" no-title scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="menu = false">
+                      Cancel
+                    </v-btn>
+                    <v-btn text color="primary" @click="$refs.menu.save(date)">
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col style="padding-top: 0">
+                <v-menu
+                  ref="menu"
+                  v-model="menu"
+                  :close-on-content-click="false"
+                  :return-value.sync="date"
+                  transition="scale-transition"
+                  offset-y
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                      v-model="date"
+                      label="Ventes au"
+                      prepend-icon="mdi-calendar"
+                      readonly
+                      dense
+                      v-bind="attrs"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker v-model="date" no-title scrollable>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="menu = false">
+                      Cancel
+                    </v-btn>
+                    <v-btn text color="primary" @click="$refs.menu.save(date)">
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-col><v-col></v-col><v-col></v-col><v-col></v-col>
+            </v-row>
+            <!--#endregion  -->
 
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="date"
-                          label="Ventes du"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          dense
-                          v-bind="attrs"
-                          v-on="on"
-                          style="padding-top: 0;"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                   <v-menu
-                      ref="menu"
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="date"
-                          label="Ventes au"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          dense
-                          v-bind="attrs"
-                          v-on="on"
-                          style="padding-top: 0;"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                  </v-col>
-                  <v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col>
-                  
-                </v-row>
-              </v-container>
-            </template>
+            <v-row>
+              <v-divider></v-divider>
+            </v-row>
 
-            <template v-slot:[`item.actions`]="{ item }">
-              <v-icon small @click="editItem(item)">mdi-dots-horizontal</v-icon>
-            </template>
+            <!-- Titre et sous-titre du graphique  -->
+            <v-row>
+              <v-col>
+                <v-toolbar-title class="text-left" style="padding-left: 0"
+                  >Évolution des ventes</v-toolbar-title
+                >
+                <v-card-subtitle class="text-left" style="padding-left: 0"
+                  >Du 03/02/2020 au 03/02/2021 (Tous)</v-card-subtitle
+                >
+              </v-col>
+            </v-row>
 
+            <!-- Graphique  -->
+            <v-row>
+              <div style="width: 100%">
+                <line-chart
+                  :chart-data="datacollection"
+                  :options="options"
+                ></line-chart>
+              </div>
+            </v-row>
+          </v-container>
         </v-card>
       </v-container>
     </v-main>
@@ -154,123 +162,75 @@ body {
 
 <script lang="ts">
 import navigationDrawer from "../components/navigationDrawer.vue";
-import LineChart from "../components/lineChart"
-import Vue from 'vue'
+import LineChart from "../components/lineChart";
+import Vue from "vue";
 
 export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
-    LineChart
+    LineChart,
   },
   data(): any {
     return {
+      itemsSelect: ["Foo", "Bar", "Fizz", "Buzz"],
       datacollection: null,
-      headers: [
-        {
-          text: "Post",
-          align: "start",
-          sortable: false,
-          value: "textContent",
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          xAxes: [
+            {
+              type: "time",
+              time: {
+                unit: "day",
+              },
+            },
+          ],
         },
-        { text: "Créateur", value: "emailPublisher" },
-        { text: "Date", value: "createdAt" },
-        { text: "nbAime", value: "nbLike" },
-        { text: "nbSignalement", value: "nbReport" },
-        { text: "Actions", value: "actions", sortable: false },
-      ],
-      items: [
-        {
-          textContent: "Espèce de sale...",
-          emailPublisher: "pajantil@email.com",
-          createdAt: "21/01/2021",
-          nbLike: 2,
-          nbReport: 2,
+        legend: {
+          display: false,
         },
-        {
-          textContent: "Espèce de sale...",
-          emailPublisher: "pajantil@email.com",
-          createdAt: "21/01/2021",
-          nbLike: 2,
-          nbReport: 2,
-        },
-        {
-          textContent: "Espèce de sale...",
-          emailPublisher: "pajantil@email.com",
-          createdAt: "21/01/2021",
-          nbLike: 2,
-          nbReport: 2,
-        },
-        {
-          textContent: "Espèce de sale...",
-          emailPublisher: "pajantil@email.com",
-          createdAt: "21/01/2021",
-          nbLike: 2,
-          nbReport: 2,
-        },
-        {
-          textContent: "Espèce de sale...",
-          emailPublisher: "pajantil@email.com",
-          createdAt: "21/01/2021",
-          nbLike: 2,
-          nbReport: 2,
-        },
-        {
-          textContent: "Espèce de sale...",
-          emailPublisher: "pajantil@email.com",
-          createdAt: "21/01/2021",
-          nbLike: 2,
-          nbReport: 2,
-        },
-        {
-          textContent: "Espèce de sale...",
-          emailPublisher: "pajantil@email.com",
-          createdAt: "21/01/2021",
-          nbLike: 2,
-          nbReport: 2,
-        },
-        {
-          textContent: "Espèce de sale...",
-          emailPublisher: "pajantil@email.com",
-          createdAt: "21/01/2021",
-          nbLike: 2,
-          nbReport: 2,
-        },
-        {
-          textContent: "Espèce de sale...",
-          emailPublisher: "pajantil@email.com",
-          createdAt: "21/01/2021",
-          nbLike: 2,
-          nbReport: 2,
-        },
-      ],
-      itemsSelect: ['Foo', 'Bar', 'Fizz', 'Buzz'],
-      
+      },
     };
   },
-    mounted () {
-      this.fillData()
+  mounted() {
+    this.fillData();
+  },
+  methods: {
+    fillData() {
+      this.datacollection = {
+        labels: [
+          new Date(2018, 8, 16),
+          new Date(2018, 8, 17),
+          new Date(2018, 8, 18),
+          new Date(2018, 8, 19),
+          new Date(2018, 8, 20),
+          new Date(2018, 8, 21),
+          new Date(2018, 8, 22),
+        ],
+        datasets: [
+          {
+            label: "Data One",
+            borderColor: "#3751FF",
+            fill: false,
+
+            data: [
+              this.getRandomInt(),
+              this.getRandomInt(),
+              this.getRandomInt(),
+              this.getRandomInt(),
+              this.getRandomInt(),
+              this.getRandomInt(),
+              this.getRandomInt(),
+            ],
+          },
+        ],
+      };
     },
-    methods: {
-      fillData () {
-        this.datacollection = {
-          labels: [this.getRandomInt(), this.getRandomInt()],
-          datasets: [
-            {
-              label: 'Data One',
-              backgroundColor: '#f87979',
-              data: [this.getRandomInt(), this.getRandomInt()]
-            }, {
-              label: 'Data One',
-              backgroundColor: '#f87979',
-              data: [this.getRandomInt(), this.getRandomInt()]
-            }
-          ]
-        }
-      },
-      getRandomInt () {
-        return Math.floor(Math.random() * (50 - 5 + 1)) + 5
-      }
-    }
+    getRandomInt() {
+      return Math.floor(Math.random() * (50 - 5 + 1)) + 5;
+    },
+  },
 });
 </script>

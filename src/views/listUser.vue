@@ -26,56 +26,64 @@
                   <v-icon @click="editItem()">mdi-refresh</v-icon>
                   <v-row ></v-row>
                   <v-row >
-                  
-                  <!-- Search text box -->
-                  <v-text-field
-                    solo
-                    dense
-                    label="Créateur"
-                    rounded
-                    class="shrink"
-                    height="15"
-                    style="maxWidth: 120px; font-size: 12px"
-                  ></v-text-field>
+                  <v-col>
+                    <!-- Search text box -->
+                    <v-text-field
+                      solo
+                      dense
+                      label="Créateur"
+                      rounded
+                      class="shrink"
+                      height="15"
+                      style="font-size: 12px"
+                    ></v-text-field>
+                  </v-col>
+
+                 <v-col>
+                    <!-- Search text box -->
+                    <v-text-field
+                      solo
+                      dense
+                      label="Créateur"
+                      rounded
+                      class="shrink"
+                      height="15"
+                      style="font-size: 12px"
+                    ></v-text-field>
+                  </v-col>
 
                   <!-- Search text box -->
-                  <v-text-field
-                    solo
-                    dense
-                    label="Créateur"
-                    rounded
-                    class="shrink"
-                    height="15"
-                    style="maxWidth: 120px; font-size: 12px"
-                  ></v-text-field>
 
-                  <!-- Search text box -->
-
-                  <v-text-field
-                    solo
-                    dense
-                    label="Créateur"
-                    rounded
-                    class="shrink"
-                    height="15"
-                    style="maxWidth: 120px; font-size: 12px"
-                  ></v-text-field>
-
+                  <v-col>
+                    <!-- Search text box -->
+                    <v-text-field
+                      solo
+                      dense
+                      label="Créateur"
+                      rounded
+                      class="shrink"
+                      height="15"
+                      style="font-size: 12px"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col>
                   <v-select
                     :items="itemsSelect"
                     label="Outlined style"
                     dense
                     outlined
-                    style="maxWidth: 120px;"
+                    style=""
                   ></v-select>
-
+                </v-col>
+                  <v-col>
                   <v-select
                     :items="itemsSelect"
                     label="Outlined style"
                     dense
                     outlined
-                    style="maxWidth: 120px;"
+                    style=""
                   ></v-select>
+                </v-col>
 
                   <!-- date picker -->
                   <v-col style="padding-top: 0;">

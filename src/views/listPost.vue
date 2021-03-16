@@ -28,6 +28,9 @@
                   <v-row >
                   <v-spacer></v-spacer>
                   <v-spacer></v-spacer>
+
+                  <v-col></v-col>
+                  <v-col>
                   <!-- Search text box -->
                   <v-text-field
                     solo
@@ -36,9 +39,12 @@
                     rounded
                     class="shrink"
                     height="15"
-                    style="maxWidth: 120px; font-size: 12px"
+                    style="font-size: 12px"
                   ></v-text-field>
+                  </v-col>
 
+
+                  <v-col>
                   <!-- Search text box -->
                   <v-text-field
                     solo
@@ -47,18 +53,19 @@
                     rounded
                     class="shrink"
                     height="15"
-                    style="maxWidth: 120px; font-size: 12px"
+                    style="font-size: 12px"
                   ></v-text-field>
+                  </v-col>
 
-
+                  <v-col>
                   <v-select
                     :items="itemsSelect"
                     label="Signalement"
                     dense
                     outlined
-                    style="maxWidth: 150px;"
+                    style=""
                   ></v-select>
-
+                  </v-col>
 
                   <!-- date picker -->
                   <v-col style="padding-top: 0;">

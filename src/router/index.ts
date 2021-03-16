@@ -7,13 +7,7 @@ Vue.use(VueRouter)
 const routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'about',
-    component: () => import('../views/About.vue')
+    redirect: '/login'
   },
   {
     path: '/login',
@@ -24,6 +18,11 @@ const routes: Array<RouteConfig> = [
     path: '/listPost',
     name: 'listPost',
     component: () => import('../views/listPost.vue')
+  },
+  {
+    path: '/listUser',
+    name: 'listUser',
+    component: () => import('../views/listUser.vue')
   },
   {
     path: '/statSales',
