@@ -10,13 +10,15 @@
     <!-- Page content -->
     <v-main style="background-color: #e5e5e5">
       <v-container fill-height>
-        <v-card class="ma-auto" align="center" justify="center" width="100%">
+        <v-card class="ma-auto" width="100%">
           <v-container fill-height>
             <v-row>
+              <v-col>
               <v-toolbar-title style="padding-left: 12px"
                 >Détails des paramètres</v-toolbar-title
               >
               <hr />
+              </v-col>
             </v-row>
 
             <v-row>

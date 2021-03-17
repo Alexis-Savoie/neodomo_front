@@ -20,6 +20,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/listPost.vue')
   },
   {
+    path: '/detailPost',
+    name: 'detailPost',
+    component: () => import('../views/detailPost.vue')
+  },
+  {
     path: '/listUser',
     name: 'listUser',
     component: () => import('../views/listUser.vue')

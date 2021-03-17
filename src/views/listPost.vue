@@ -147,9 +147,13 @@
                 </v-row>
               </v-container>
             </template>
-
+<!--
             <template v-slot:[`item.actions`]="{ item }">
-              <v-icon small @click="editItem(item)">mdi-dots-horizontal</v-icon>
+              <v-icon small  @click="editItem(item)">mdi-dots-horizontal</v-icon>
+            </template>
+-->
+            <template v-slot:[`item.actions`]>
+              <v-icon small  @click="$router.push('/detailPost')">mdi-dots-horizontal</v-icon>
             </template>
           </v-data-table>
         </v-card>

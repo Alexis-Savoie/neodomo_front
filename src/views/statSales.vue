@@ -122,12 +122,14 @@
 
             <!-- Graphique  -->
             <v-row>
+              <v-col cols=12>
               <div style="width: 100%">
                 <line-chart
                   :chart-data="datacollection"
                   :options="options"
                 ></line-chart>
               </div>
+              </v-col>
             </v-row>
           </v-container>
         </v-card>
