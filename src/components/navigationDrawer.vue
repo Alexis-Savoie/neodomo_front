@@ -26,7 +26,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link>
+        <v-list-item link @click="$router.push('/listMessage')">
           <v-list-item-icon>
             <v-icon color="#A4A6B3">mdi-forum</v-icon>   
           </v-list-item-icon>
@@ -35,7 +35,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link>
+        <v-list-item link @click="$router.push('/listUser')">
           <v-list-item-icon>
             <v-icon color="#A4A6B3">mdi-account-multiple</v-icon>   
           </v-list-item-icon>
@@ -44,7 +44,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link>
+        <v-list-item link @click="$router.push('/listProduct')">
           <v-list-item-icon>
             <v-icon color="#A4A6B3">mdi-cart</v-icon>   
           </v-list-item-icon>
@@ -53,7 +53,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link>
+        <v-list-item link @click="$router.push('/listBill')">
           <v-list-item-icon>
             <v-icon color="#A4A6B3">mdi-receipt</v-icon>   
           </v-list-item-icon>
@@ -73,7 +73,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link>
+        <v-list-item link @click="$router.push('/statGamification')">
           <v-list-item-icon>
             <v-icon color="#A4A6B3">mdi-gamepad</v-icon>   
           </v-list-item-icon>
@@ -93,7 +93,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item link>
+        <v-list-item link @click="$router.push('/login')">
           <v-list-item-icon>
             <v-icon color="#A4A6B3">mdi-logout</v-icon>   
           </v-list-item-icon>

@@ -15,6 +15,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/Login.vue')
   },
   {
+    path: '/forgotPassword',
+    name: 'forgotPassword',
+    component: () => import('../views/forgotPassword.vue')
+  },
+  {
     path: '/listPost',
     name: 'listPost',
     component: () => import('../views/listPost.vue')
@@ -25,14 +30,64 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/detailPost.vue')
   },
   {
+    path: '/listComment',
+    name: 'listComment',
+    component: () => import('../views/listComment.vue')
+  },
+  {
+    path: '/listMessage',
+    name: 'listMessage',
+    component: () => import('../views/listMessage.vue')
+  },
+  {
+    path: '/detailMessage',
+    name: 'detailMessage',
+    component: () => import('../views/detailMessage.vue')
+  },
+  {
     path: '/listUser',
-    name: 'listUser',
+    name: 'listMessage',
     component: () => import('../views/listUser.vue')
+  },
+  {
+    path: '/detailUser',
+    name: 'detailUser',
+    component: () => import('../views/detailUser.vue')
+  },
+  {
+    path: '/listProduct',
+    name: 'listProduct',
+    component: () => import('../views/listProduct.vue')
+  },
+  {
+    path: '/detailProduct',
+    name: 'detailProduct',
+    component: () => import('../views/detailProduct.vue')
+  },
+  {
+    path: '/addProduct',
+    name: 'addProduct',
+    component: () => import('../views/addProduct.vue')
+  },
+  {
+    path: '/listBill',
+    name: 'listBill',
+    component: () => import('../views/listBill.vue')
+  },
+  {
+    path: '/detailBill',
+    name: 'detailBill',
+    component: () => import('../views/detailBill.vue')
   },
   {
     path: '/statSales',
     name: 'statSales',
     component: () => import('../views/statSales.vue')
+  },
+  {
+    path: '/statGamification',
+    name: 'statGamification',
+    component: () => import('../views/statGamification.vue')
   },
   {
     path: '/settings',

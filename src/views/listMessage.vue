@@ -1,7 +1,7 @@
 <template>
   <v-app class="black">
     <v-app-bar app flat color="#E5E5E5">
-      <v-toolbar-title style="padding-left: 2em">Utilisateurs</v-toolbar-title>
+      <v-toolbar-title style="padding-left: 2em">Messages</v-toolbar-title>
       <v-spacer></v-spacer>
       <div :class="`text-${model}`">emailAdmin@mail.com</div>
     </v-app-bar>
@@ -22,16 +22,18 @@
             <template v-slot:top>
               <v-container fill-height>
      
-                  <v-toolbar-title style="padding-right: 0.5em">Liste des utilisateurs</v-toolbar-title>
+                  <v-toolbar-title style="padding-right: 0.5em">Liste des messages</v-toolbar-title>
                   <v-icon @click="editItem()">mdi-refresh</v-icon>
                   <v-row ></v-row>
                   <v-row >
+                    <v-spacer></v-spacer>
+                  <v-spacer></v-spacer>
                   <v-col>
                     <!-- Search text box -->
                     <v-text-field
                       solo
                       dense
-                      label="email"
+                      label="Créateur"
                       rounded
                       class="shrink"
                       height="15"
@@ -44,7 +46,7 @@
                     <v-text-field
                       solo
                       dense
-                      label="Prénom"
+                      label="Destinataire"
                       rounded
                       class="shrink"
                       height="15"
@@ -59,32 +61,13 @@
                     <v-text-field
                       solo
                       dense
-                      label="Nom"
+                      label="Contenu"
                       rounded
                       class="shrink"
                       height="15"
                       style="font-size: 12px"
                     ></v-text-field>
                   </v-col>
-                  <v-col>
-                  <v-select
-                    :items="itemsSelect"
-                    label="Type compte"
-                    dense
-                    outlined
-                    style=""
-                  ></v-select>
-                </v-col>
-                  <v-col>
-                  <v-select
-                    :items="itemsSelect"
-                    label="Signalement"
-                    dense
-                    outlined
-                    style=""
-                  ></v-select>
-                </v-col>
-
                   <!-- date picker -->
                   <v-col style="padding-top: 0;">
 
@@ -97,8 +80,6 @@
                       :return-value.sync="date"
                       transition="scale-transition"
                       offset-y
-                      
-
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
@@ -162,89 +143,13 @@
                       </v-date-picker>
                     </v-menu>
                   </v-col>
-                  <!-- date picker -->
-                  <v-col style="padding-top: 0;">
-
-                    <v-menu
-                      ref="menu"
-                      dense
-                      rounded
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
-                      
-
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="date"
-                          label="Créer de"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          style="padding-top: 0;"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-
-                   <v-menu
-                      ref="menu"
-                      dense
-                      rounded
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="date"
-                          label="Créer à"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          style="padding-top: 0;"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                  </v-col>
+                  
                 </v-row>
               </v-container>
             </template>
 
             <template v-slot:[`item.actions`]>
-              <v-icon small @click="$router.push('/detailUser')">mdi-dots-horizontal</v-icon>
+              <v-icon small @click="$router.push('/detailMessage')">mdi-dots-horizontal</v-icon>
             </template>
           </v-data-table>
         </v-card>
@@ -289,81 +194,58 @@ export default {
     return {
       headers: [
         {
-          text: "email",
+          text: "Message",
           align: "start",
-          value: "email",
+          sortable: false,
+          value: "textContent",
         },
-        { text: "Prénom", value: "userFirstname" },
-        { text: "Nom", value: "userName" },
-        { text: "Inscrit le", value: "createdAt" },
-        { text: "Status", value: "status" },
-        { text: "Bloqué", value: "isBlocked" },
+        { text: "Expéditeur", value: "sender" },
+        { text: "Destinataire", value: "receiver" },
+        { text: "Date", value: "createdAt" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       items: [
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          textContent: "Espèce de sale...",
+          sender: "pajantil@email.com",
+          receiver: "mejJantil@email.com",
+          createdAt: "21/01/2021",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          textContent: "Espèce de sale...",
+          sender: "pajantil@email.com",
+          receiver: "mejJantil@email.com",
+          createdAt: "21/01/2021",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          textContent: "Espèce de sale...",
+          sender: "pajantil@email.com",
+          receiver: "mejJantil@email.com",
+          createdAt: "21/01/2021",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          textContent: "Espèce de sale...",
+          sender: "pajantil@email.com",
+          receiver: "mejJantil@email.com",
+          createdAt: "21/01/2021",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          textContent: "Espèce de sale...",
+          sender: "pajantil@email.com",
+          receiver: "mejJantil@email.com",
+          createdAt: "21/01/2021",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          textContent: "Espèce de sale...",
+          sender: "pajantil@email.com",
+          receiver: "mejJantil@email.com",
+          createdAt: "21/01/2021",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
-        },
-        {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          textContent: "Espèce de sale...",
+          sender: "pajantil@email.com",
+          receiver: "mejJantil@email.com",
+          createdAt: "21/01/2021",
         },
       ],
       itemsSelect: ['Foo', 'Bar', 'Fizz', 'Buzz'],

@@ -1,7 +1,7 @@
 <template>
   <v-app class="black">
     <v-app-bar app flat color="#E5E5E5">
-      <v-toolbar-title style="padding-left: 2em">Utilisateurs</v-toolbar-title>
+      <v-toolbar-title style="padding-left: 2em">Factures</v-toolbar-title>
       <v-spacer></v-spacer>
       <div :class="`text-${model}`">emailAdmin@mail.com</div>
     </v-app-bar>
@@ -22,7 +22,7 @@
             <template v-slot:top>
               <v-container fill-height>
      
-                  <v-toolbar-title style="padding-right: 0.5em">Liste des utilisateurs</v-toolbar-title>
+                  <v-toolbar-title style="padding-right: 0.5em">Liste des factures</v-toolbar-title>
                   <v-icon @click="editItem()">mdi-refresh</v-icon>
                   <v-row ></v-row>
                   <v-row >
@@ -31,7 +31,7 @@
                     <v-text-field
                       solo
                       dense
-                      label="email"
+                      label="Numéro"
                       rounded
                       class="shrink"
                       height="15"
@@ -44,7 +44,7 @@
                     <v-text-field
                       solo
                       dense
-                      label="Prénom"
+                      label="Acheteur"
                       rounded
                       class="shrink"
                       height="15"
@@ -59,109 +59,37 @@
                     <v-text-field
                       solo
                       dense
-                      label="Nom"
+                      label="ID Produit"
                       rounded
                       class="shrink"
                       height="15"
                       style="font-size: 12px"
                     ></v-text-field>
                   </v-col>
+
                   <v-col>
-                  <v-select
-                    :items="itemsSelect"
-                    label="Type compte"
-                    dense
-                    outlined
-                    style=""
-                  ></v-select>
-                </v-col>
-                  <v-col>
-                  <v-select
-                    :items="itemsSelect"
-                    label="Signalement"
-                    dense
-                    outlined
-                    style=""
-                  ></v-select>
-                </v-col>
-
-                  <!-- date picker -->
-                  <v-col style="padding-top: 0;">
-
-                    <v-menu
-                      ref="menu"
+                    <!-- Search text box -->
+                    <v-text-field
+                      solo
                       dense
+                      label="prixMin"
                       rounded
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
-                      
-
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="date"
-                          label="Créer de"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          style="padding-top: 0;"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-
-                   <v-menu
-                      ref="menu"
+                      class="shrink"
+                      height="15"
+                      style="font-size: 12px"
+                    ></v-text-field>
+                    <!-- Search text box -->
+                    <v-text-field
+                      solo
                       dense
+                      label="prixMax"
                       rounded
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="date"
-                          label="Créer à"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          style="padding-top: 0;"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
+                      class="shrink"
+                      height="15"
+                      style="font-size: 12px"
+                    ></v-text-field>
                   </v-col>
+
                   <!-- date picker -->
                   <v-col style="padding-top: 0;">
 
@@ -180,12 +108,12 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="date"
-                          label="Créer de"
+                          label="Du"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
                           v-on="on"
-                          style="padding-top: 0;"
+                          style=""
                         ></v-text-field>
                       </template>
                       <v-date-picker v-model="date" no-title scrollable>
@@ -216,7 +144,7 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
                           v-model="date"
-                          label="Créer à"
+                          label="à"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
@@ -244,7 +172,7 @@
             </template>
 
             <template v-slot:[`item.actions`]>
-              <v-icon small @click="$router.push('/detailUser')">mdi-dots-horizontal</v-icon>
+              <v-icon small @click="$router.push('/detailBill')">mdi-dots-horizontal</v-icon>
             </template>
           </v-data-table>
         </v-card>
@@ -289,82 +217,75 @@ export default {
     return {
       headers: [
         {
-          text: "email",
+          text: "Numéro facture",
           align: "start",
-          value: "email",
+          value: "numberBill",
         },
-        { text: "Prénom", value: "userFirstname" },
-        { text: "Nom", value: "userName" },
-        { text: "Inscrit le", value: "createdAt" },
-        { text: "Status", value: "status" },
-        { text: "Bloqué", value: "isBlocked" },
+        { text: "Date de commande", value: "dateBill" },
+        { text: "Description", value: "description" },
+        { text: "Prix", value: "price" },
+        { text: "Mode de paiement", value: "paymentMethod" },
+        { text: "Destinataire", value: "emailBuyer" },
         { text: "Actions", value: "actions", sortable: false },
       ],
       items: [
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          numberBill: "12121212",
+          dateBill: "10/01/2021",
+          description: "550 domos",
+          price: 5.5,
+          paymentMethod: "CB",
+          emailBuyer: "mecsympa@email.com",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          numberBill: "12121212",
+          dateBill: "10/01/2021",
+          description: "550 domos",
+          price: 5.5,
+          paymentMethod: "CB",
+          emailBuyer: "mecsympa@email.com",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          numberBill: "12121212",
+          dateBill: "10/01/2021",
+          description: "550 domos",
+          price: 5.5,
+          paymentMethod: "CB",
+          emailBuyer: "mecsympa@email.com",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          numberBill: "12121212",
+          dateBill: "10/01/2021",
+          description: "550 domos",
+          price: 5.5,
+          paymentMethod: "CB",
+          emailBuyer: "mecsympa@email.com",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          numberBill: "12121212",
+          dateBill: "10/01/2021",
+          description: "550 domos",
+          price: 5.5,
+          paymentMethod: "CB",
+          emailBuyer: "mecsympa@email.com",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          numberBill: "12121212",
+          dateBill: "10/01/2021",
+          description: "550 domos",
+          price: 5.5,
+          paymentMethod: "CB",
+          emailBuyer: "mecsympa@email.com",
         },
         {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
+          numberBill: "12121212",
+          dateBill: "10/01/2021",
+          description: "550 domos",
+          price: 5.5,
+          paymentMethod: "CB",
+          emailBuyer: "mecsympa@email.com",
         },
-        {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
-        },
+
       ],
       itemsSelect: ['Foo', 'Bar', 'Fizz', 'Buzz'],
     };

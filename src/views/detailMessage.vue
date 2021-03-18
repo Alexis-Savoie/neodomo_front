@@ -1,7 +1,7 @@
 <template>
   <v-app class="black">
     <v-app-bar app flat color="#E5E5E5">
-      <v-toolbar-title style="padding-left: 2em">Posts</v-toolbar-title>
+      <v-toolbar-title style="padding-left: 2em">Messages</v-toolbar-title>
       <v-spacer></v-spacer>
       <div :class="`text-${model}`">emailAdmin@mail.com</div>
     </v-app-bar>
@@ -15,7 +15,7 @@
             <v-row>
               <v-col>
                 <v-toolbar-title style="padding-left: 12px"
-                  >Détails post</v-toolbar-title
+                  >Détails message</v-toolbar-title
                 >
               </v-col>
             </v-row>
@@ -38,8 +38,9 @@
                   color="#363740"
                   @click="Login"
                   >Supprimer et bloquer</v-btn
-                > </v-col
-              ><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col
+                >
+              </v-col>
+              <v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col
               ><v-col></v-col><v-col></v-col>
             </v-row>
             <v-row>
@@ -47,7 +48,15 @@
             </v-row>
             <v-row>
               <v-col>
-                <v-card-text class="text-center">ID post</v-card-text>
+                <v-card-text class="text-center">ID Message</v-card-text>
+                <v-text-field
+                  solo
+                  dense
+                  disabled
+                  label=""
+                  rounded
+                ></v-text-field>
+                <v-card-text class="text-center">Email</v-card-text>
                 <v-text-field
                   solo
                   dense
@@ -63,7 +72,7 @@
                   label=""
                   rounded
                 ></v-text-field>
-                <v-card-text class="text-center">Auteur</v-card-text>
+                <v-card-text class="text-center">Expéditeur</v-card-text>
                 <v-text-field
                   solo
                   dense
@@ -71,17 +80,7 @@
                   label=""
                   rounded
                 ></v-text-field>
-                <v-card-text class="text-center">Nombre aime</v-card-text>
-                <v-text-field
-                  solo
-                  dense
-                  disabled
-                  label=""
-                  rounded
-                ></v-text-field>
-                <v-card-text class="text-center"
-                  >Nombre signalement</v-card-text
-                >
+                <v-card-text class="text-center">Destinataire</v-card-text>
                 <v-text-field
                   solo
                   dense
@@ -93,42 +92,20 @@
               <v-divider vertical></v-divider>
               <v-col class="text-center">
                 <v-card-text class="text-center"
-                  >Contenu du message</v-card-text
+                  >Contenu Textuelle</v-card-text
                 >
                 <v-textarea
                   outlined
-                  solo
                   rounded
+                  solo
                   disabled
                   name="input-7-4"
                   label="Contenu textuelle"
                   value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
                 ></v-textarea>
-                <v-card-text>Liste images</v-card-text>
-                <v-divider></v-divider>
                 <div class="text-center">
-                  <v-btn color="blue" plain>Image 1</v-btn>
+                  <v-btn color="blue" plain>Image </v-btn>
                 </div>
-                <div class="text-center">
-                  <v-btn color="blue" plain>Image 2</v-btn>
-                </div>
-                <div class="text-center">
-                  <v-btn color="blue" plain>Image 3</v-btn>
-                </div>
-                <div class="text-center">
-                  <v-btn color="blue" plain>Image 4</v-btn>
-                </div>
-                <v-divider style="margin-bottom: 24px"></v-divider>
-
-                <v-card-text>Commentaires du post</v-card-text>
-                <v-btn
-                  rounded
-                  class="boutton"
-                  dark
-                  color="#363740"
-                  @click="$router.push('/listComment')"
-                  >Voir</v-btn
-                >
               </v-col>
             </v-row>
           </v-container>

@@ -8,31 +8,20 @@
       <v-container fill-height>
         <v-card class="ma-auto" align="center" justify="center" width="500">
           <v-card-title class="justify-center"
-            >Gestionnaire de l'application Neo Domo</v-card-title
+            >Mot de passe oublié</v-card-title
           >
           <v-card-text>
             <v-text-field
               solo
+              rounded
               label="Email"
-              prepend-icon="mdi-account-circle"
               v-model="email"
-            />
-            <v-text-field
-              solo
-              label="Mot de passe"
-              type="password"
-              prepend-icon="mdi-lock"
             />
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn rounded class="boutton" dark color="#363740" @click="Login">Connexion</v-btn>
-            <v-spacer></v-spacer>
-          </v-card-actions>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn plain class="mx-auto" color="blue" @click="$router.push('/forgotPassword')">Mot de passe oublié ?</v-btn>
+            <v-btn rounded class="boutton" dark color="#363740" @click="$router.push('/login')">Soumettre</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
