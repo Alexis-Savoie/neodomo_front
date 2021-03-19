@@ -11,5 +11,9 @@ export default Vue.extend({
     // If you want to pass options please create a local options object
     this.renderChart(this.chartData, this.options)
   },
-  data(): any {}
+  data(): any {
+    return {
+      itemsSelect: ["Foo", "Bar", "Fizz", "Buzz"],
+    };
+  },
 })

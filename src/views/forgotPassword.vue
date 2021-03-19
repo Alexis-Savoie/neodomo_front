@@ -21,7 +21,7 @@
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn rounded class="boutton" dark color="#363740" @click="$router.push('/login')">Soumettre</v-btn>
+              <v-btn rounded class="boutton" dark color="#363740" @click="$router.push('/login')">Soumettre</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>

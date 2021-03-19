@@ -26,7 +26,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="Login"
+                  @click="$router.push('/listPost')"
                   >Supprimer</v-btn
                 >
               </v-col>
@@ -36,7 +36,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="Login"
+                  @click="$router.push('/listPost')"
                   >Supprimer et bloquer</v-btn
                 > </v-col
               ><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col

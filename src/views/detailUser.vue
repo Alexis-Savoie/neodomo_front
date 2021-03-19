@@ -26,7 +26,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="Login"
+                  @click="$router.push('/listUser')"
                   >Mettre à jour</v-btn
                 >
               </v-col>
@@ -36,7 +36,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="Login"
+                  @click="$router.push('/listUser')"
                   >Bloquer</v-btn
                 >
               </v-col>

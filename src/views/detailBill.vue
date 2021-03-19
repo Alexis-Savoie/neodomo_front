@@ -26,7 +26,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="Login"
+                  @click="$router.push('/listBill')"
                   >Supprimer</v-btn
                 >
               </v-col>
