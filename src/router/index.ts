@@ -2,6 +2,23 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 
+
+function guardMyroute(to: any, from: any, next: any) {
+  let isAuthenticated = false;
+  //this is just an example. You will have to find a better or 
+  // centralised way to handle you localstorage data handling 
+  if (localStorage.getItem('isAuthenticated'))
+    isAuthenticated = true;
+  else
+    isAuthenticated = false;
+  if (isAuthenticated) {
+    next(); // allow to enter route
+  }
+  else {
+    next('/login'); // go to '/login';
+  }
+}
+
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
@@ -22,76 +39,91 @@ const routes: Array<RouteConfig> = [
   {
     path: '/listPost',
     name: 'listPost',
+    beforeEnter : guardMyroute,
     component: () => import('../views/listPost.vue')
   },
   {
     path: '/detailPost',
     name: 'detailPost',
+    beforeEnter : guardMyroute,
     component: () => import('../views/detailPost.vue')
   },
   {
     path: '/listComment',
     name: 'listComment',
+    beforeEnter : guardMyroute,
     component: () => import('../views/listComment.vue')
   },
   {
     path: '/listMessage',
     name: 'listMessage',
+    beforeEnter : guardMyroute,
     component: () => import('../views/listMessage.vue')
   },
   {
     path: '/detailMessage',
     name: 'detailMessage',
+    beforeEnter : guardMyroute,
     component: () => import('../views/detailMessage.vue')
   },
   {
     path: '/listUser',
     name: 'listMessage',
+    beforeEnter : guardMyroute,
     component: () => import('../views/listUser.vue')
   },
   {
     path: '/detailUser',
     name: 'detailUser',
+    beforeEnter : guardMyroute,
     component: () => import('../views/detailUser.vue')
   },
   {
     path: '/listProduct',
     name: 'listProduct',
+    beforeEnter : guardMyroute,
     component: () => import('../views/listProduct.vue')
   },
   {
     path: '/detailProduct',
     name: 'detailProduct',
+    beforeEnter : guardMyroute,
     component: () => import('../views/detailProduct.vue')
   },
   {
     path: '/addProduct',
     name: 'addProduct',
+    beforeEnter : guardMyroute,
     component: () => import('../views/addProduct.vue')
   },
   {
     path: '/listBill',
     name: 'listBill',
+    beforeEnter : guardMyroute,
     component: () => import('../views/listBill.vue')
   },
   {
     path: '/detailBill',
     name: 'detailBill',
+    beforeEnter : guardMyroute,
     component: () => import('../views/detailBill.vue')
   },
   {
     path: '/statSales',
     name: 'statSales',
+    beforeEnter : guardMyroute,
     component: () => import('../views/statSales.vue')
   },
   {
     path: '/statGamification',
     name: 'statGamification',
+    beforeEnter : guardMyroute,
     component: () => import('../views/statGamification.vue')
   },
   {
     path: '/settings',
     name: 'settings',
+    beforeEnter : guardMyroute,
     component: () => import('../views/settings.vue')
   }
 ]
