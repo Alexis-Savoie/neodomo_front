@@ -176,6 +176,7 @@ export default Vue.extend({
           console.log(response)
           localStorage.removeItem('isAuthenticated')
           localStorage.removeItem("token");
+          localStorage.removeItem("emailAdmin");
           router.push("/login");
         })
         .catch(function (error) {

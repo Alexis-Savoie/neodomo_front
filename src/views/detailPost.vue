@@ -3,7 +3,7 @@
     <v-app-bar app flat color="#E5E5E5">
       <v-toolbar-title style="padding-left: 2em">Posts</v-toolbar-title>
       <v-spacer></v-spacer>
-      <div :class="`text-${model}`">emailAdmin@mail.com</div>
+      <div>{{ emailAdmin }}</div>
     </v-app-bar>
     <navigationDrawer />
 
@@ -49,45 +49,55 @@
               <v-col>
                 <v-card-text class="text-center">ID post</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
                   disabled
                   label=""
                   rounded
+                  v-model="idPost"
                 ></v-text-field>
                 <v-card-text class="text-center">Date</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
                   disabled
                   label=""
                   rounded
+                  v-model="createdAt"
                 ></v-text-field>
                 <v-card-text class="text-center">Auteur</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
                   disabled
                   label=""
                   rounded
+                  v-model="emailPublisher"
                 ></v-text-field>
                 <v-card-text class="text-center">Nombre aime</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
                   disabled
                   label=""
                   rounded
+                  v-model="nbLike"
                 ></v-text-field>
                 <v-card-text class="text-center"
                   >Nombre signalement</v-card-text
                 >
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
                   disabled
                   label=""
                   rounded
+                  v-model="nbReport"
                 ></v-text-field>
               </v-col>
               <v-divider vertical></v-divider>
@@ -101,8 +111,8 @@
                   rounded
                   disabled
                   name="input-7-4"
-                  label="Contenu textuelle"
-                  value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
+                  label=""
+                  :value="textContent"
                 ></v-textarea>
                 <v-card-text>Liste images</v-card-text>
                 <v-divider></v-divider>
@@ -153,6 +163,10 @@ body {
 #app {
   font-family: "Mulish", sans-serif;
 }
+
+.centered-input input {
+  text-align: center;
+}
 </style>
 
 
@@ -163,17 +177,61 @@ body {
 
 
 <script lang="ts">
+import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
+import axios from "axios";
 
-export default {
+const API_URL = process.env.VUE_APP_API_URL as string;
+const token = localStorage.getItem("token");
+
+export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
   },
   data() {
     return {
-      itemsSelect: ["Foo", "Bar", "Fizz", "Buzz"],
+      emailAdmin: "",
+
+      idPost: "",
+      createdAt: "",
+      emailPublisher: "",
+      nbLike: 0,
+      nbReport: 0,
+      textContent: "",
+      listImage: [],
     };
   },
-};
+  methods: {
+    getPost(idPost: string) {
+      axios
+        .post(
+          API_URL + "/admin/searchPost",
+          { idPost: idPost },
+          { headers: { Authorization: "Bearer " + token } }
+        )
+        .then((response) => {
+          if (response.data.message == "succès (non-vide)") {
+            this.idPost = response.data.posts[0]._id;
+            this.createdAt = response.data.posts[0].createdAt;
+            this.textContent = response.data.posts[0].textContent;
+            this.emailPublisher = response.data.posts[0].emailPublisher;
+            this.nbLike = response.data.posts[0].listLike.length;
+            this.nbReport = response.data.posts[0].listReport.length;
+            console.log("prout");
+            console.log(response.data.posts[0]);
+          }
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log(error);
+        });
+    },
+  },
+  created() {
+    this.emailAdmin = localStorage.getItem("emailAdmin") || "";
+    this.idPost = this.$route.params.id;
+    this.getPost(this.idPost)
+  },
+});
 </script>

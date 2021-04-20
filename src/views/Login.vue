@@ -59,7 +59,7 @@ import Vue from "vue";
 import router from "../router";
 import axios from "axios";
 
-const API_URL: string = process.env.VUE_APP_API_URL!;
+const API_URL = process.env.VUE_APP_API_URL as string;
 
 export default Vue.extend({
   name: "Login",
@@ -81,11 +81,12 @@ export default Vue.extend({
             email: this.email,
             password: this.password,
           })
-          .then(function (response) {
+          .then((response) => {
             if(response.status == 200)
             {
               localStorage.setItem('token', response.data.token.toString())
               localStorage.setItem('isAuthenticated', "true")
+              localStorage.setItem('emailAdmin', this.email)
               
               router.push("/listPost");
             }

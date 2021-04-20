@@ -43,7 +43,7 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/listPost.vue')
   },
   {
-    path: '/detailPost',
+    path: '/detailPost/:id',
     name: 'detailPost',
     beforeEnter : guardMyroute,
     component: () => import('../views/detailPost.vue')
