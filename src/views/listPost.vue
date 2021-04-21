@@ -24,7 +24,19 @@
                 <v-toolbar-title style="padding-right: 0.5em"
                   >Liste des posts</v-toolbar-title
                 >
-                <v-icon @click="editItem()">mdi-refresh</v-icon>
+                <v-icon
+                  @click="
+                    searchPost(
+                      '',
+                      emailPublisherSearch,
+                      textContentSearch,
+                      createdAtFromSearch.toString(),
+                      createdAtAtSearch.toString(),
+                      haveReportSearch
+                    )
+                  "
+                  >mdi-refresh</v-icon
+                >
                 <v-row></v-row>
                 <v-row>
                   <v-spacer></v-spacer>
@@ -41,6 +53,7 @@
                       class="shrink"
                       height="15"
                       style="font-size: 12px"
+                      v-model="emailPublisherSearch"
                     ></v-text-field>
                   </v-col>
 
@@ -54,6 +67,7 @@
                       class="shrink"
                       height="15"
                       style="font-size: 12px"
+                      v-model="textContentSearch"
                     ></v-text-field>
                   </v-col>
 
@@ -64,82 +78,81 @@
                       dense
                       outlined
                       style=""
+                      v-model="haveReportSearch"
                     ></v-select>
                   </v-col>
 
-                  <!-- date picker -->
+                  
                   <v-col style="padding-top: 0">
-                    <v-menu
-                      ref="menu"
-                      dense
-                      rounded
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
+                    <!-- date picker 1-->
+                    <v-dialog
+                      ref="dialog"
+                      v-model="modal"
+                      :return-value.sync="createdAtFromSearch"
+                      persistent
+                      width="290px"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="date"
+                          v-model="createdAtFromSearch"
                           label="Créer de"
                           prepend-icon="mdi-calendar"
                           readonly
-                          dense
                           v-bind="attrs"
                           v-on="on"
-                          style="padding-top: 0"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="date" no-title scrollable>
+                      <v-date-picker v-model="createdAtFromSearch" scrollable header-color="#363740" color="#363740" locale="fr-FR">
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
+                        <v-btn text color="black" @click="modal = false">
+                          Annuler
                         </v-btn>
                         <v-btn
                           text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
+                          color="black"
+                          @click="$refs.dialog.save(createdAtFromSearch)"
                         >
                           OK
                         </v-btn>
                       </v-date-picker>
-                    </v-menu>
+                    </v-dialog>
 
-                    <v-menu
-                      ref="menu"
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
+
+
+                    <!-- date picker 2-->
+                    <v-dialog
+                      ref="dialog2"
+                      v-model="modal2"
+                      :return-value.sync="createdAtAtSearch"
+                      persistent
+                      width="290px"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="date"
+                          v-model="createdAtAtSearch"
                           label="Créer à"
                           prepend-icon="mdi-calendar"
                           readonly
-                          dense
                           v-bind="attrs"
                           v-on="on"
-                          style="padding-top: 0"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="date" no-title scrollable>
+                      <v-date-picker v-model="createdAtAtSearch" scrollable header-color="#363740" color="#363740" locale="fr-FR">
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
+                        <v-btn text color="black" @click="modal2 = false">
+                          Annuler
                         </v-btn>
                         <v-btn
                           text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
+                          color="black"
+                          @click="$refs.dialog2.save(createdAtAtSearch)"
                         >
                           OK
                         </v-btn>
                       </v-date-picker>
-                    </v-menu>
+                    </v-dialog>
+
+
                   </v-col>
                 </v-row>
               </v-container>
@@ -149,10 +162,14 @@
               <v-icon small  @click="editItem(item)">mdi-dots-horizontal</v-icon>
             </template>
 -->
-            <template v-slot:[`item.actions`]="t" >
-              <v-icon small @click="$router.push('/detailPost/' + t.item.idPost)">mdi-dots-horizontal</v-icon>
+            <template v-slot:[`item.actions`]="t">
+              <v-icon
+                small
+                v-if="t.item.idPost != undefined"
+                @click="$router.push('/detailPost/' + t.item.idPost)"
+                >mdi-dots-horizontal</v-icon
+              >
             </template>
-
           </v-data-table>
         </v-card>
       </v-container>
@@ -197,86 +214,94 @@ export default Vue.extend({
   components: {
     navigationDrawer,
   },
-  data(){
+  data() {
     return {
-    emailAdmin: "",
-    headers: [
-      {
-        text: "Post",
-        align: "start",
-        sortable: false,
-        value: "textContent",
-      },
-      { text: "idPost", value: "idPost"},
-      { text: "Créateur", value: "emailPublisher" },
-      { text: "Date", value: "createdAt" },
-      { text: "nbAime", value: "nbLike" },
-      { text: "nbSignalement", value: "nbReport" },
-      { text: "Actions", value: "actions", sortable: false },
-    ],
-    items: [{}],
-    itemsSelect: ["Oui", "Non", "Les 2"],
-  }
+      emailAdmin: "",
+
+      emailPublisherSearch: "",
+      textContentSearch: "",
+      haveReportSearch: "",
+      createdAtFromSearch: new Date().toISOString().substr(0, 10),
+      createdAtAtSearch: new Date().toISOString().substr(0, 10),
+
+
+      modal: false,
+      modal2: false,
+
+      headers: [
+        {
+          text: "Post",
+          align: "start",
+          sortable: false,
+          value: "textContent",
+        },
+        { text: "idPost", value: "idPost" },
+        { text: "Créateur", value: "emailPublisher" },
+        { text: "Date", value: "createdAt" },
+        { text: "nbAime", value: "nbLike" },
+        { text: "nbSignalement", value: "nbReport" },
+        { text: "Actions", value: "actions", sortable: false },
+      ],
+      items: [{}],
+      itemsSelect: ["Oui", "Non", "Les 2"],
+    };
   },
 
   methods: {
-    searchPost(idPost: string, emailPublisher: string, textContent: string, createdAtFrom: string, createdAtAt: string, haveReport: string) {
-      const parameters = {} as any
-      if (emailPublisher != "")
-        parameters.emailPublisher = emailPublisher
-      if (textContent != "")
-        parameters.textContent = textContent
-      if (createdAtFrom != "")
-        parameters.createdAtFrom = createdAtFrom
-      if (createdAtAt != "")
-        parameters.createdAtAt = createdAtAt
-      if (haveReport != "")
-      {
-        if (haveReport == "Oui")
-          parameters.createdAtAt = "1"
-        if (haveReport == "Non")
-          parameters.createdAtAt = "0"
+    searchPost(
+      idPost: string,
+      emailPublisher: string,
+      textContent: string,
+      createdAtFrom: string,
+      createdAtAt: string,
+      haveReport: string
+    ) {
+
+      this.items = [{}];
+
+      const parameters = {} as any;
+      if (idPost != "") parameters.idPost = idPost;
+      if (emailPublisher != "") parameters.emailPublisher = emailPublisher;
+      if (textContent != "") parameters.textContent = textContent;
+      if (createdAtFrom != "") parameters.createdAtFrom = createdAtFrom;
+      if (createdAtAt != "") parameters.createdAtAt = createdAtAt;
+      if (haveReport != "") {
+        if (haveReport == "Oui") parameters.createdAtAt = 0;
+        if (haveReport == "Non") parameters.createdAtAt = 1;
       }
-        
-
-
+      
       axios
-      .post(
-        API_URL + "/admin/searchPost",
-        parameters,
-        { headers: { Authorization: "Bearer " + token } }
-      )
-      .then( (response) => {
-        if (response.data.message == "succès (non-vide)") {
-          const items = [];
-          for (let i = 0; i < response.data.posts.length; i++) {
-            const item = {
-              idPost: response.data.posts[i]._id,
-              textContent: response.data.posts[i].textContent,
-              emailPublisher: response.data.posts[i].emailPublisher,
-              createdAt: response.data.posts[i].createdAt,
-              nbLike: response.data.posts[i].listLike.length,
-              nbReport: response.data.posts[i].listReport.length
-            };
-            items[i] = item;
-            
+        .post(API_URL + "/admin/searchPost", parameters, {
+          headers: { Authorization: "Bearer " + token },
+        })
+        .then((response) => {
+          if (response.data.message == "succès (non-vide)") {
+            const items = [];
+            for (let i = 0; i < response.data.posts.length; i++) {
+              const item = {
+                idPost: response.data.posts[i]._id,
+                textContent: response.data.posts[i].textContent,
+                emailPublisher: response.data.posts[i].emailPublisher,
+                createdAt: response.data.posts[i].createdAt,
+                nbLike: response.data.posts[i].listLike.length,
+                nbReport: response.data.posts[i].listReport.length,
+              };
+              items[i] = item;
+            }
+
+            this.items = items;
           }
-
-          this.items = items
-          console.log(this.items);
-
-        }
-      })
-      .catch(function (error) {
-        alert("erreur !");
-        console.log("erreur")
-        console.log(error)
-      });
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log("erreur");
+          console.log(error);
+        });
     },
   },
   mounted() {
-    this.searchPost("", "", "", "", "", "")
-    this.emailAdmin = localStorage.getItem("emailAdmin") || ""
+    this.searchPost("", "", "", "", "", "");
+    this.emailAdmin = localStorage.getItem("emailAdmin") || "";
   },
-})
+});
 </script>

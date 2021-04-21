@@ -3,7 +3,7 @@
     <v-app-bar app flat color="#E5E5E5">
       <v-toolbar-title style="padding-left: 2em">Posts</v-toolbar-title>
       <v-spacer></v-spacer>
-      <div :class="`text-${model}`">emailAdmin@mail.com</div>
+      <div>{{ emailAdmin }}</div>
     </v-app-bar>
     <navigationDrawer />
 
@@ -26,7 +26,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listProduct')"
+                  @click="createProduct(nameProduct, description, parseInt(price), parseInt(availableStock), imageURL)"
                   >Ajouter</v-btn>
               </v-col>
               <v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col>
@@ -38,28 +38,28 @@
               <v-col></v-col>
               <v-col>
                 <v-card-text class="text-center">Nom produit</v-card-text>
-                <v-text-field solo dense label="" rounded></v-text-field>
+                <v-text-field solo dense label="" rounded v-model="nameProduct"></v-text-field>
                 <v-card-text class="text-center">Description</v-card-text>
                 <v-textarea
                   outlined
                   solo
                   rounded
                   name="input-7-4"
-                  value=""
+                  v-model="description"
                 ></v-textarea>
                 <v-card-text class="text-center"
                   >Image d'illustration (URL)</v-card-text
                 >
-                <v-text-field solo dense label="" rounded></v-text-field>
+                <v-text-field solo dense label="" rounded v-model="imageURL"></v-text-field>
                 <v-card-text class="text-center">Prix (Domo)</v-card-text>
-                <v-text-field solo dense label="" rounded></v-text-field>
+                <v-text-field solo dense label="" rounded v-model="price"></v-text-field>
                 <v-card-text class="text-center">Nombre de stocks</v-card-text>
                 <v-text-field
                   solo
                   dense
-                  disabled
                   label=""
                   rounded
+                  v-model="availableStock"
                 ></v-text-field>
               </v-col>
               <v-col></v-col>
@@ -96,17 +96,68 @@ body {
 
 
 <script lang="ts">
+import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
+import axios from "axios";
 
-export default {
+const API_URL = process.env.VUE_APP_API_URL as string;
+const token = localStorage.getItem("token");
+
+export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
   },
   data() {
     return {
-      itemsSelect: ["Foo", "Bar", "Fizz", "Buzz"],
+      emailAdmin: "",
+
+      nameProduct: "",
+      description: "",
+      price: "",
+      availableStock: "",
+      imageURL: "",
     };
   },
-};
+
+  methods: {
+    createProduct(
+      nameProduct: string,
+      description: string,
+      price: number,
+      availableStock: number,
+      imageURL: string,
+    ) {
+
+
+      const parameters = {
+        nameProduct: nameProduct,
+        description: description,
+        price: price,
+        availableStock: availableStock,
+        imageURL: imageURL
+      }
+      console.log(parameters)
+      axios
+        .post(API_URL + "/admin/addProduct", parameters, {
+          headers: { Authorization: "Bearer " + token },
+        })
+        .then((response) => {
+          if (response.status == 201) {
+             alert("Le produit à été créer avec succès")
+             this.$router.push('/listProduct')
+
+          }
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log("erreur lors de la création (Données invalides ?)");
+          console.log(error);
+        });
+    },
+  },
+  mounted() {
+    this.emailAdmin = localStorage.getItem("emailAdmin") || "";
+  },
+});
 </script>

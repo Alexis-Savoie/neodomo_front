@@ -170,18 +170,18 @@ export default Vue.extend({
   computed: {},
   methods: {
     Logout() {
+      localStorage.removeItem('isAuthenticated')
+      localStorage.removeItem("token");
+      localStorage.removeItem("emailAdmin");
       axios
         .delete(API_URL + "/admin/logout", {headers: {"Authorization": "Bearer " + token}})
         .then(function (response) {
           console.log(response)
-          localStorage.removeItem('isAuthenticated')
-          localStorage.removeItem("token");
-          localStorage.removeItem("emailAdmin");
-          router.push("/login");
         })
         .catch(function (error) {
           alert("Erreur serveur !");
         });
+        router.push("/login");
     },
   },
 });

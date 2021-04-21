@@ -196,9 +196,6 @@ export default Vue.extend({
           new Date(2018, 8, 17),
           new Date(2018, 8, 18),
           new Date(2018, 8, 19),
-          new Date(2018, 8, 20),
-          new Date(2018, 8, 21),
-          new Date(2018, 8, 22),
         ],
         datasets: [
           {
@@ -207,9 +204,6 @@ export default Vue.extend({
             fill: false,
 
             data: [
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
               this.getRandomInt(),
               this.getRandomInt(),
               this.getRandomInt(),

@@ -21,7 +21,8 @@
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-              <v-btn rounded class="boutton" dark color="#363740" @click="$router.push('/login')">Soumettre</v-btn>
+            <v-btn rounded class="boutton" dark color="#363740" @click="forgotPassword(email)">Soumettre</v-btn>
+              <v-btn rounded class="boutton" dark color="#363740" @click="$router.push('/login')">Retour</v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
@@ -33,28 +34,6 @@
 
 
 
-
-<script lang="ts">
-import Vue from "vue";
-import router from "../router";
-
-export default Vue.extend({
-  name: "Login",
-  props: {},
-  components: {},
-  data: () => ({
-    email: "",
-    right: null,
-  }),
-  computed: {},
-  methods: {
-    Login() {
-      console.log(this.email);
-      router.push("/listPost");
-    },
-  },
-});
-</script>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Mulish:wght@500&display=swap");
 
@@ -67,3 +46,45 @@ body {
   font-family: "Mulish", sans-serif;
 }
 </style>
+
+
+
+
+<script lang="ts">
+import Vue from "vue";
+import axios from "axios";
+
+const API_URL = process.env.VUE_APP_API_URL as string;
+const token = localStorage.getItem("token");
+
+export default Vue.extend({
+  name: "App",
+  components: {},
+  data() {
+    return {
+      email: ""
+    };
+  },
+
+  methods: {
+    forgotPassword(
+      email: string,
+    ) {
+
+      axios
+        .post(API_URL + "/admin/forgotPassword", { email: email })
+        .then((response) => {
+          if (response.status == 200) {
+             alert("Un email contenant un mot de passe temporaire à été envoyé.")
+             this.$router.push('/login')
+
+          }
+        })
+        .catch(function (error) {
+          alert("erreur ! Email invalide ou inexistant !");
+          console.log(error);
+        });
+    },
+  },
+});
+</script>

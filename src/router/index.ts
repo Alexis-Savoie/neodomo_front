@@ -43,13 +43,13 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/listPost.vue')
   },
   {
-    path: '/detailPost/:id',
+    path: '/detailPost/:idPost?',
     name: 'detailPost',
     beforeEnter : guardMyroute,
     component: () => import('../views/detailPost.vue')
   },
   {
-    path: '/listComment',
+    path: '/listComment/:idPost?',
     name: 'listComment',
     beforeEnter : guardMyroute,
     component: () => import('../views/listComment.vue')

@@ -26,7 +26,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listPost')"
+                  @click="deletePost()"
                   >Supprimer</v-btn
                 >
               </v-col>
@@ -36,7 +36,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listPost')"
+                  @click="deletePostAndBlock()"
                   >Supprimer et bloquer</v-btn
                 > </v-col
               ><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col
@@ -116,18 +116,52 @@
                 ></v-textarea>
                 <v-card-text>Liste images</v-card-text>
                 <v-divider></v-divider>
-                <div class="text-center">
-                  <v-btn color="blue" plain>Image 1</v-btn>
+                <div
+                  class="text-center"
+                  v-if="
+                    this.listImage.length > 0 && this.listImage[0].URL != ''
+                  "
+                >
+                  <div
+                    class="text-center"
+                    v-if="
+                      this.listImage.length > 0 && this.listImage[0].URL != ''
+                    "
+                  >
+                    <v-btn
+                      color="blue"
+                      plain
+                      :href="'//' + this.listImage[0].URL"
+                      target="_blank"
+                      >Image 1</v-btn
+                    >
+                    <div
+                      class="text-center"
+                      v-if="
+                        this.listImage.length > 1 && this.listImage[1].URL != ''
+                      "
+                    >
+                      <v-btn color="blue" plain>Image 2</v-btn>
+                    </div>
+                    <div
+                      class="text-center"
+                      v-if="
+                        this.listImage.length > 2 && this.listImage[2].URL != ''
+                      "
+                    >
+                      <v-btn color="blue" plain>Image 3</v-btn>
+                    </div>
+                    <div
+                      class="text-center"
+                      v-if="
+                        this.listImage.length > 3 && this.listImage[3].URL != ''
+                      "
+                    >
+                      <v-btn color="blue" plain>Image 4</v-btn>
+                    </div>
+                  </div>
                 </div>
-                <div class="text-center">
-                  <v-btn color="blue" plain>Image 2</v-btn>
-                </div>
-                <div class="text-center">
-                  <v-btn color="blue" plain>Image 3</v-btn>
-                </div>
-                <div class="text-center">
-                  <v-btn color="blue" plain>Image 4</v-btn>
-                </div>
+                <div class="text-center" v-else>Aucune image pour ce post</div>
                 <v-divider style="margin-bottom: 24px"></v-divider>
 
                 <v-card-text>Commentaires du post</v-card-text>
@@ -136,8 +170,8 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listComment')"
-                  >Voir</v-btn
+                  @click="$router.push('/listComment/' + idPost)"
+                  >Voir ({{ nbComment }})</v-btn
                 >
               </v-col>
             </v-row>
@@ -196,10 +230,11 @@ export default Vue.extend({
       idPost: "",
       createdAt: "",
       emailPublisher: "",
+      nbComment: 0,
       nbLike: 0,
       nbReport: 0,
       textContent: "",
-      listImage: [],
+      listImage: [{ URL: "" }],
     };
   },
   methods: {
@@ -216,10 +251,12 @@ export default Vue.extend({
             this.createdAt = response.data.posts[0].createdAt;
             this.textContent = response.data.posts[0].textContent;
             this.emailPublisher = response.data.posts[0].emailPublisher;
+            this.nbComment = response.data.posts[0].listComment.length;
             this.nbLike = response.data.posts[0].listLike.length;
             this.nbReport = response.data.posts[0].listReport.length;
-            console.log("prout");
-            console.log(response.data.posts[0]);
+            this.listImage = response.data.posts[0].listImage;
+            console.log("OK");
+            console.log(this.listImage[0].URL);
           }
         })
         .catch(function (error) {
@@ -227,11 +264,67 @@ export default Vue.extend({
           console.log(error);
         });
     },
+    deletePost(idPost: string) {
+      axios
+        .delete(API_URL + "/admin/deletePost", {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          data: {
+            idPost: this.idPost,
+          },
+        })
+        .then((response) => {
+          alert("L'opération s'est effectué avec succès !")
+          this.$router.push("/listPost")
+
+        })
+        .catch(function (error) {
+          alert("erreur suppression post !");
+          console.log(error);
+        });
+    },
+    deletePostAndBlock(idPost: string) {
+      axios
+        .delete(API_URL + "/admin/deletePost", {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          data: {
+            idPost: this.idPost,
+          },
+        })
+        .then((response) => {
+          console.log(response.data)
+          if (response.status == 200) {
+            console.log("DELETEPOSTOK")
+            console.log(this.emailPublisher)
+            axios
+              .put(API_URL + "/admin/blockUser",           
+              { email: this.emailPublisher },
+              { headers: { Authorization: "Bearer " + token } })
+              .then((response) => {
+                if (response.status == 200) {
+                  alert("L'opération s'est effectué avec succès !")
+                  this.$router.push("/listPost")
+                }
+              })
+              .catch(function (error) {
+                alert("erreur blocage !");
+                console.log(error);
+              });
+          }
+        })
+        .catch(function (error) {
+          alert("erreur suppression post !");
+          console.log(error);
+        });
+    },
   },
   created() {
     this.emailAdmin = localStorage.getItem("emailAdmin") || "";
-    this.idPost = this.$route.params.id;
-    this.getPost(this.idPost)
+    this.idPost = this.$route.params.idPost;
+    this.getPost(this.idPost);
   },
 });
 </script>
