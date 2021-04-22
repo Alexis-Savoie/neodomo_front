@@ -101,7 +101,7 @@ import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
 
 const API_URL = process.env.VUE_APP_API_URL as string;
-const token = localStorage.getItem("token");
+
 
 export default Vue.extend({
   name: "App",
@@ -111,6 +111,7 @@ export default Vue.extend({
   data() {
     return {
       emailAdmin: "",
+      token: localStorage.getItem("token") || "",
 
       nameProduct: "",
       description: "",
@@ -140,7 +141,7 @@ export default Vue.extend({
       console.log(parameters)
       axios
         .post(API_URL + "/admin/addProduct", parameters, {
-          headers: { Authorization: "Bearer " + token },
+          headers: { Authorization: "Bearer " + this.token },
         })
         .then((response) => {
           if (response.status == 201) {

@@ -29,7 +29,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login.vue')
+    component: () => import('../views/login.vue')
   },
   {
     path: '/forgotPassword',
@@ -61,7 +61,7 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/listMessage.vue')
   },
   {
-    path: '/detailMessage',
+    path: '/detailMessage/:idMessage?',
     name: 'detailMessage',
     beforeEnter : guardMyroute,
     component: () => import('../views/detailMessage.vue')
@@ -73,7 +73,7 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/listUser.vue')
   },
   {
-    path: '/detailUser',
+    path: '/detailUser/:idUser?',
     name: 'detailUser',
     beforeEnter : guardMyroute,
     component: () => import('../views/detailUser.vue')
@@ -85,7 +85,7 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/listProduct.vue')
   },
   {
-    path: '/detailProduct',
+    path: '/detailProduct/:idProduct?',
     name: 'detailProduct',
     beforeEnter : guardMyroute,
     component: () => import('../views/detailProduct.vue')
@@ -97,19 +97,19 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/addProduct.vue')
   },
   {
-    path: '/listBill',
+    path: '/listBill/:idProduct?',
     name: 'listBill',
     beforeEnter : guardMyroute,
     component: () => import('../views/listBill.vue')
   },
   {
-    path: '/detailBill',
+    path: '/detailBill/:idBill?',
     name: 'detailBill',
     beforeEnter : guardMyroute,
     component: () => import('../views/detailBill.vue')
   },
   {
-    path: '/statSales',
+    path: '/statSales/:idProduct?',
     name: 'statSales',
     beforeEnter : guardMyroute,
     component: () => import('../views/statSales.vue')

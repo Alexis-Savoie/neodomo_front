@@ -23,73 +23,86 @@
             <v-row><v-divider></v-divider></v-row>
             <!--#region Selector  -->
 
-
             <v-row>
               <!-- date picker -->
-              <v-col >
-                <v-menu
-                  ref="menu"
-                  dense
-                  rounded
-                  v-model="menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="date"
-                  transition="scale-transition"
-                  offset-y
+              <v-col>
+                <v-dialog
+                  ref="dialog"
+                  v-model="modal"
+                  :return-value.sync="createdAtFromSearch"
+                  persistent
+                  width="290px"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="date"
-                      label="Du"
+                      v-model="createdAtFromSearch"
+                      label="Ventes du"
                       prepend-icon="mdi-calendar"
                       readonly
-                      dense
                       v-bind="attrs"
                       v-on="on"
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="date" no-title scrollable>
+                  <v-date-picker
+                    v-model="createdAtFromSearch"
+                    scrollable
+                    header-color="#363740"
+                    color="#363740"
+                    locale="fr-FR"
+                  >
                     <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menu = false">
-                      Cancel
+                    <v-btn text color="black" @click="modal = false">
+                      Annuler
                     </v-btn>
-                    <v-btn text color="primary" @click="$refs.menu.save(date)">
+                    <v-btn
+                      text
+                      color="black"
+                      @click="$refs.dialog.save(createdAtFromSearch)"
+                    >
                       OK
                     </v-btn>
                   </v-date-picker>
-                </v-menu>
+                </v-dialog>
               </v-col>
               <v-col>
-                <v-menu
-                  ref="menu"
-                  v-model="menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="date"
-                  transition="scale-transition"
-                  offset-y
+                <v-dialog
+                  ref="dialog2"
+                  v-model="modal2"
+                  :return-value.sync="createdAtAtSearch"
+                  persistent
+                  width="290px"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="date"
-                      label="Au"
+                      v-model="createdAtAtSearch"
+                      label="Ventes à"
                       prepend-icon="mdi-calendar"
                       readonly
-                      dense
                       v-bind="attrs"
                       v-on="on"
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="date" no-title scrollable>
+                  <v-date-picker
+                    v-model="createdAtAtSearch"
+                    scrollable
+                    header-color="#363740"
+                    color="#363740"
+                    locale="fr-FR"
+                  >
                     <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menu = false">
-                      Cancel
+                    <v-btn text color="black" @click="modal2 = false">
+                      Annuler
                     </v-btn>
-                    <v-btn text color="primary" @click="$refs.menu.save(date)">
+                    <v-btn
+                      text
+                      color="black"
+                      @click="$refs.dialog2.save(createdAtAtSearch)"
+                    >
                       OK
                     </v-btn>
                   </v-date-picker>
-                </v-menu>
-              </v-col><v-col></v-col><v-col></v-col><v-col></v-col>
+                </v-dialog> </v-col
+              ><v-col></v-col><v-col></v-col><v-col></v-col>
             </v-row>
             <!--#endregion  -->
 
@@ -104,20 +117,21 @@
                   >Évolution des DP gagné par gamification</v-toolbar-title
                 >
                 <v-card-subtitle class="text-left" style="padding-left: 0"
-                  >Du 03/02/2020 au 03/02/2021</v-card-subtitle
+                  >Du {{ createdAtFromSearch }} au
+                  {{ createdAtAtSearch }}</v-card-subtitle
                 >
               </v-col>
             </v-row>
 
             <!-- Graphique  -->
             <v-row>
-              <v-col cols=12>
-              <div style="width: 100%">
-                <line-chart
-                  :chart-data="datacollection"
-                  :options="options"
-                ></line-chart>
-              </div>
+              <v-col cols="12">
+                <div style="width: 100%">
+                  <line-chart
+                    :chart-data="datacollection"
+                    :options="options"
+                  ></line-chart>
+                </div>
               </v-col>
             </v-row>
           </v-container>
@@ -150,11 +164,13 @@ body {
 
 
 
-
 <script lang="ts">
 import navigationDrawer from "../components/navigationDrawer.vue";
 import LineChart from "../components/lineChart";
+import axios from "axios";
 import Vue from "vue";
+
+const API_URL = process.env.VUE_APP_API_URL as string;
 
 export default Vue.extend({
   name: "App",
@@ -164,7 +180,18 @@ export default Vue.extend({
   },
   data(): any {
     return {
-      itemsSelect: ["Foo", "Bar", "Fizz", "Buzz"],
+      emailAdmin: "",
+      token: localStorage.getItem("token") || "",
+
+      labels: [],
+      data: [],
+
+      createdAtFromSearch: new Date().toISOString().substr(0, 10),
+      createdAtAtSearch: new Date().toISOString().substr(0, 10),
+      modal: false,
+      modal2: false,
+
+
       datacollection: null,
       options: {
         responsive: true,
@@ -186,35 +213,88 @@ export default Vue.extend({
     };
   },
   mounted() {
-    this.fillData();
+    this.emailAdmin = localStorage.getItem("emailAdmin");
+    this.updateStats(this.currentProduct.value, "", "");
   },
   methods: {
     fillData() {
       this.datacollection = {
-        labels: [
-          new Date(2018, 8, 16),
-          new Date(2018, 8, 17),
-          new Date(2018, 8, 18),
-          new Date(2018, 8, 19),
-        ],
+        labels: Array.from(this.labels),
         datasets: [
           {
             label: "Data One",
             borderColor: "#3751FF",
             fill: false,
 
-            data: [
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
-              this.getRandomInt(),
-            ],
+            data: Array.from(this.data),
           },
         ],
       };
     },
-    getRandomInt() {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5;
+    updateStats(createdAtFrom: string, createdAtAt: string) {
+      const parameters = {} as any;
+      if (createdAtFrom != "") parameters.createdAtFrom = createdAtFrom;
+      if (createdAtAt != "") parameters.createdAtAt = createdAtAt;
+
+      axios
+        .post(API_URL + "/admin/searchGaming", parameters, {
+          headers: { Authorization: "Bearer " + this.token },
+        })
+        .then((response) => {
+          if (response.data.message == "succès (non-vide)") {
+            const resultArr = [] as any;
+
+            // REmove time from date
+            for (let i = 0; i < response.data.gaming_events.length; i++) {
+              resultArr.push(response.data.gaming_events[i].createdAt.split("T")[0]);
+            }
+
+            // Conut number of sells for each day
+            const counts = {} as any;
+            for (let i = 0; i < resultArr.length; i++) {
+              const num = resultArr[i];
+              counts[num] = counts[num] ? counts[num] + 1 : 1;
+            }
+
+            const labels = [];
+            const data = [];
+            // Adapt data into arrays for the graph
+            for (const propertyName in counts) {
+              labels.push(new Date(propertyName).setHours(0, 0, 0, 0));
+              data.push(counts[propertyName]);
+            }
+
+            this.labels = labels;
+            this.data = data;
+
+            this.fillData();
+          } else {
+            this.labels = [];
+            this.data = [];
+
+            this.fillData();
+          }
+        })
+        .catch((error) => {
+          alert("Erreur serveur !");
+          console.log("Erreur serveur !");
+          console.log(error);
+        });
+    },
+  },
+  watch: {
+
+    createdAtFromSearch: function (val: any) {
+      this.updateStats(
+        this.createdAtFromSearch,
+        this.createdAtAtSearch
+      );
+    },
+    createdAtAtSearch: function (val: any) {
+      this.updateStats(
+        this.createdAtFromSearch,
+        this.createdAtAtSearch
+      );
     },
   },
 });

@@ -295,7 +295,7 @@ export default Vue.extend({
         .catch(function (error) {
           alert("erreur !");
           console.log("erreur");
-          console.log(error);
+          console.log(error.response);
         });
     },
   },

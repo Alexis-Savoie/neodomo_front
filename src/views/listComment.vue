@@ -24,7 +24,7 @@
                 <v-toolbar-title style="padding-right: 0.5em"
                   >Liste des commentaires</v-toolbar-title
                 >
-                                <v-icon
+                <v-icon
                   @click="
                     searchComment(
                       idPostSearch,
@@ -33,7 +33,7 @@
                       replyToSearch,
                       haveReportSearch,
                       createdAtFromSearch.toString(),
-                      createdAtAtSearch.toString(),
+                      createdAtAtSearch.toString()
                     )
                   "
                   >mdi-refresh</v-icon
@@ -192,7 +192,12 @@
             </template>
 
             <template v-slot:[`item.actions`]="t">
-              <v-icon v-if="t.item.idComment != undefined" small @click="editItem(item)">mdi-delete</v-icon>
+              <v-icon
+                v-if="t.item.idComment != undefined"
+                small
+                @click="deleteComment(t.item.idComment)"
+                >mdi-delete</v-icon
+              >
             </template>
           </v-data-table>
         </v-card>
@@ -231,7 +236,6 @@ import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
 
 const API_URL = process.env.VUE_APP_API_URL as string;
-const token = localStorage.getItem("token");
 
 export default Vue.extend({
   name: "App",
@@ -241,6 +245,7 @@ export default Vue.extend({
   data() {
     return {
       emailAdmin: "",
+      token: localStorage.getItem("token") || "",
 
       idPostSearch: "",
       emailSenderSearch: "",
@@ -278,11 +283,10 @@ export default Vue.extend({
       replyTo: string,
       haveReport: string,
       createdAtFrom: string,
-      createdAtAt: string,
-
+      createdAtAt: string
     ) {
       this.items = [{}];
-      console.log(idPost)
+      console.log(idPost);
       const parameters = {} as any;
 
       if (idPost != "") parameters.idPost = idPost;
@@ -295,10 +299,10 @@ export default Vue.extend({
         if (haveReport == "Oui") parameters.createdAtAt = 0;
         if (haveReport == "Non") parameters.createdAtAt = 1;
       }
-      console.log(parameters)
+      console.log(parameters);
       axios
         .post(API_URL + "/admin/searchComment", parameters, {
-          headers: { Authorization: "Bearer " + token },
+          headers: { Authorization: "Bearer " + this.token },
         })
         .then((response) => {
           if (response.data.message == "succès (non-vide)") {
@@ -324,6 +328,31 @@ export default Vue.extend({
           console.log("erreur");
           console.log(error);
         });
+    },
+    deleteComment(idComment: string) {
+      if ( confirm( "Êtes-vous sûr de vouloir supprimer ce commentaire ?" ) ) {
+              axios
+        .delete(API_URL + "/admin/deleteComment", {
+          headers: {
+            Authorization: "Bearer " + this.token,
+          },
+          data: {
+            idComment: idComment,
+          },
+        })
+        .then((response) => {
+          location.reload();
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log("erreur");
+          console.log(error.response);
+        });
+    
+      } else {
+          // Code à éxécuter si l'utilisateur clique sur "Annuler" 
+      }
+
     },
   },
   mounted() {

@@ -3,7 +3,7 @@
     <v-app-bar app flat color="#E5E5E5">
       <v-toolbar-title style="padding-left: 2em">Stocks</v-toolbar-title>
       <v-spacer></v-spacer>
-      <div :class="`text-${model}`">emailAdmin@mail.com</div>
+      <div >{{ emailAdmin }}</div>
     </v-app-bar>
     <navigationDrawer />
 
@@ -26,7 +26,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listProduct')"
+                  @click="updateProduct()"
                   >Mettre à jour</v-btn
                 >
               </v-col>
@@ -36,7 +36,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listProduct')"
+                  @click="deleteProduct()"
                   >Supprimer</v-btn
                 > </v-col
               ><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col
@@ -54,6 +54,7 @@
                   disabled
                   label=""
                   rounded
+                  v-model="idProduct"
                 ></v-text-field>
                 <v-card-text class="text-center">Nom produit</v-card-text>
                 <v-text-field
@@ -61,6 +62,7 @@
                   dense
                   label=""
                   rounded
+                  v-model="nameProduct"
                 ></v-text-field>
                 <v-card-text class="text-center">Description</v-card-text>
                 <v-textarea
@@ -69,6 +71,7 @@
                   rounded
                   name="input-7-4"
                   value=""
+                  v-model="description"
                 ></v-textarea>
               </v-col>
               <v-divider vertical></v-divider>
@@ -79,6 +82,7 @@
                   dense
                   label=""
                   rounded
+                  v-model="price"
                 ></v-text-field>
 
                 <v-card-text class="text-center">Nombre de stocks</v-card-text>
@@ -87,16 +91,17 @@
                   dense
                   label=""
                   rounded
+                  v-model="availableStock"
                 ></v-text-field>
 
-                <v-card-text class="text-center">Nombre de acheteurs</v-card-text>
+                <v-card-text class="text-center">Nombre de ventes</v-card-text>
                 <v-btn
                   rounded
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listBill')"
-                  >Voir (3)</v-btn
+                  @click="$router.push('/listBill/' + idProduct)"
+                  >Voir ({{ nbBill }})</v-btn
                 >
 
                 <v-card-text class="text-center">Statistiques</v-card-text>
@@ -105,7 +110,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/statSales')"
+                  @click="$router.push('/statSales/' + idProduct)"
                   >Voir</v-btn
                 >
                 
@@ -143,17 +148,105 @@ body {
 
 
 <script lang="ts">
+import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
+import axios from "axios";
 
-export default {
+const API_URL = process.env.VUE_APP_API_URL as string;
+const token = localStorage.getItem("token");
+
+export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
   },
   data() {
     return {
-      itemsSelect: ["Foo", "Bar", "Fizz", "Buzz"],
+      emailAdmin: "",
+
+      idProduct: "",
+      nameProduct: "",
+      description: "",
+      price: "",
+      availableStock: "",
+      nbBill: ""
+
     };
   },
-};
+  methods: {
+    getProduct(idProduct: string) {
+      axios
+        .post(
+          API_URL + "/admin/searchProduct",
+          { idProduct: idProduct },
+          { headers: { Authorization: "Bearer " + token } }
+        )
+        .then((response) => {
+          console.log(response.data)
+          if (response.data.message == "succès (non-vide)") {
+            this.nameProduct = response.data.products[0].nameProduct;
+            this.description = response.data.products[0].description;
+            this.price = response.data.products[0].price;
+            this.availableStock = response.data.products[0].availableStock;
+            this.nbBill = response.data.products[0].listBill.length;
+
+          }
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log(error);
+        });
+    },
+    deleteProduct(idProduct: string) {
+      axios
+        .delete(API_URL + "/admin/deleteProduct", {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          data: {
+            idProduct: this.idProduct,
+          },
+        })
+        .then((response) => {
+          alert("L'opération s'est effectué avec succès !")
+          this.$router.push("/listPost")
+
+        })
+        .catch(function (error) {
+          alert("erreur suppression post !");
+          console.log(error);
+        });
+    },
+    updateProduct(idProduct: string) {
+      const parameters = {
+        idProduct: this.idProduct,
+        nameProduct: this.nameProduct,
+        description: this.description,
+        price: this.price,
+        availableStock: this.availableStock,
+      }
+      axios
+        .put(
+          API_URL + "/admin/editProduct",
+          parameters,
+          { headers: { Authorization: "Bearer " + token } }
+        )
+        .then((response) => {
+          if (response.status == 200) {
+            alert("Mise à jour du produit réussite !");
+
+          }
+        })
+        .catch(function (error) {
+          alert("erreur mise à jour produit !");
+          console.log(error);
+        });
+    },
+  },
+  created() {
+    this.emailAdmin = localStorage.getItem("emailAdmin") || "";
+    this.idProduct = this.$route.params.idProduct;
+    this.getProduct(this.idProduct);
+  },
+});
 </script>

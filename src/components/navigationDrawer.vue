@@ -159,29 +159,35 @@ import router from "../router";
 import axios from "axios";
 
 const API_URL: string = process.env.VUE_APP_API_URL!;
-const token = localStorage.getItem("token");
+
 
 export default Vue.extend({
   props: {},
   components: {},
   data: () => ({
+    token: localStorage.getItem("token") || "",
     right: null,
   }),
   computed: {},
   methods: {
     Logout() {
-      localStorage.removeItem('isAuthenticated')
-      localStorage.removeItem("token");
-      localStorage.removeItem("emailAdmin");
       axios
-        .delete(API_URL + "/admin/logout", {headers: {"Authorization": "Bearer " + token}})
+        .delete(API_URL + "/admin/logout", {
+          headers: { Authorization: "Bearer " + this.token },
+        })
         .then(function (response) {
-          console.log(response)
+          localStorage.removeItem("isAuthenticated");
+          localStorage.removeItem("token");
+          localStorage.removeItem("emailAdmin");
+          router.push("/login");
         })
         .catch(function (error) {
-          alert("Erreur serveur !");
+          localStorage.removeItem("isAuthenticated");
+          localStorage.removeItem("token");
+          localStorage.removeItem("emailAdmin");
+          router.push("/login");
         });
-        router.push("/login");
+
     },
   },
 });

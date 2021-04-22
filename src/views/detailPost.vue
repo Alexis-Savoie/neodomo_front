@@ -216,7 +216,7 @@ import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
 
 const API_URL = process.env.VUE_APP_API_URL as string;
-const token = localStorage.getItem("token");
+
 
 export default Vue.extend({
   name: "App",
@@ -225,7 +225,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      emailAdmin: "",
+      emailAdmin: localStorage.getItem("emailAdmin"),
+      token: localStorage.getItem("token"),
 
       idPost: "",
       createdAt: "",
@@ -243,7 +244,7 @@ export default Vue.extend({
         .post(
           API_URL + "/admin/searchPost",
           { idPost: idPost },
-          { headers: { Authorization: "Bearer " + token } }
+          { headers: { Authorization: "Bearer " + this.token } }
         )
         .then((response) => {
           if (response.data.message == "succès (non-vide)") {
@@ -268,7 +269,7 @@ export default Vue.extend({
       axios
         .delete(API_URL + "/admin/deletePost", {
           headers: {
-            Authorization: "Bearer " + token,
+            Authorization: "Bearer " + this.token,
           },
           data: {
             idPost: this.idPost,
@@ -288,7 +289,7 @@ export default Vue.extend({
       axios
         .delete(API_URL + "/admin/deletePost", {
           headers: {
-            Authorization: "Bearer " + token,
+            Authorization: "Bearer " + this.token,
           },
           data: {
             idPost: this.idPost,
@@ -302,7 +303,7 @@ export default Vue.extend({
             axios
               .put(API_URL + "/admin/blockUser",           
               { email: this.emailPublisher },
-              { headers: { Authorization: "Bearer " + token } })
+              { headers: { Authorization: "Bearer " + this.token } })
               .then((response) => {
                 if (response.status == 200) {
                   alert("L'opération s'est effectué avec succès !")
@@ -321,7 +322,7 @@ export default Vue.extend({
         });
     },
   },
-  created() {
+  mounted() {
     this.emailAdmin = localStorage.getItem("emailAdmin") || "";
     this.idPost = this.$route.params.idPost;
     this.getPost(this.idPost);
