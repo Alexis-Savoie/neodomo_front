@@ -141,7 +141,7 @@
                         this.listImage.length > 1 && this.listImage[1].URL != ''
                       "
                     >
-                      <v-btn color="blue" plain>Image 2</v-btn>
+                      <v-btn color="blue" plain :href="'//' + this.listImage[1].URL">Image 2</v-btn>
                     </div>
                     <div
                       class="text-center"
@@ -149,7 +149,7 @@
                         this.listImage.length > 2 && this.listImage[2].URL != ''
                       "
                     >
-                      <v-btn color="blue" plain>Image 3</v-btn>
+                      <v-btn color="blue" plain :href="'//' + this.listImage[2].URL">Image 3</v-btn>
                     </div>
                     <div
                       class="text-center"
@@ -157,7 +157,7 @@
                         this.listImage.length > 3 && this.listImage[3].URL != ''
                       "
                     >
-                      <v-btn color="blue" plain>Image 4</v-btn>
+                      <v-btn color="blue" plain :href="'//' + this.listImage[3].URL">Image 4</v-btn>
                     </div>
                   </div>
                 </div>
@@ -323,7 +323,6 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.emailAdmin = localStorage.getItem("emailAdmin") || "";
     this.idPost = this.$route.params.idPost;
     this.getPost(this.idPost);
   },

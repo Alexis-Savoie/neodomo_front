@@ -116,8 +116,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      token: localStorage.getItem("token") || '',
-      emailAdmin: "",
+      emailAdmin: localStorage.getItem("emalToken") || "",
+      token: localStorage.getItem("token") || "", 
 
       email: "",
       password: "",
@@ -207,8 +207,6 @@ export default Vue.extend({
     },
 
   },
-  mounted() {
-    this.emailAdmin = localStorage.getItem("emailAdmin") || "";
-  },
+
 });
 </script>

@@ -3,7 +3,7 @@
     <v-app-bar app flat color="#E5E5E5">
       <v-toolbar-title style="padding-left: 2em">Utilisateurs</v-toolbar-title>
       <v-spacer></v-spacer>
-      <div :class="`text-${model}`">emailAdmin@mail.com</div>
+      <div>{{ emailAdmin }}</div>
     </v-app-bar>
     <navigationDrawer />
 
@@ -26,7 +26,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listUser')"
+                  @click="updateUser()"
                   >Mettre à jour</v-btn
                 >
               </v-col>
@@ -36,7 +36,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listUser')"
+                  @click="blockUser()"
                   >Bloquer</v-btn
                 >
               </v-col>
@@ -50,79 +50,91 @@
               <v-col>
                 <v-card-text class="text-center">ID Utilisateur</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
                   disabled
                   label=""
                   rounded
+                  v-model="idUser"
                 ></v-text-field>
                 <v-card-text class="text-center">Email</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
                   disabled
                   label=""
                   rounded
+                  v-model="emailUser"
                 ></v-text-field>
                 <v-card-text class="text-center">Nom</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
-                  disabled
                   label=""
                   rounded
+                  v-model="lastname"
                 ></v-text-field>
                 <v-card-text class="text-center">Prénom</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
-                  disabled
                   label=""
                   rounded
+                  v-model="firstname"
                 ></v-text-field>
                 <v-card-text class="text-center">Type</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
-                  disabled
                   label=""
                   rounded
+                  v-model="accountType"
                 ></v-text-field>
                 <v-card-text class="text-center">Status</v-card-text>
                 <v-text-field
                   solo
+                  class="centered-input"
                   dense
-                  disabled
                   label=""
                   rounded
+                  v-model="status"
                 ></v-text-field>
                 <v-card-text class="text-center">Balance Domo</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
-                  disabled
                   label=""
                   rounded
+                  v-model="domoBalance"
                 ></v-text-field>
-
               </v-col>
               <v-divider vertical></v-divider>
               <v-col class="text-center">
                 <v-card-text class="text-center">Dernière activité</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
                   disabled
                   label=""
                   rounded
+                  v-model="lastActivity"
                 ></v-text-field>
                 <v-card-text class="text-center">Inscrit le</v-card-text>
                 <v-text-field
+                  class="centered-input"
                   solo
                   dense
                   disabled
                   label=""
                   rounded
+                  v-model="createdAt"
                 ></v-text-field>
 
                 <v-card-text>Nombre de posts</v-card-text>
@@ -131,8 +143,8 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listPost')"
-                  >Voir (2)</v-btn
+                  @click="$router.push('/listPost/' + emailUser)"
+                  >Voir ({{ nbPost }})</v-btn
                 >
 
                 <v-card-text>Nombre de messages</v-card-text>
@@ -141,34 +153,34 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listMessage')"
-                  >Voir (3)</v-btn
+                  @click="$router.push('/listMessage/' + emailUser)"
+                  >Voir ({{ nbMessage }})</v-btn
                 >
 
                 <v-card-text>Nombre de signalements recu</v-card-text>
                 <v-row>
                   <v-col></v-col>
-                <v-col>
-                <v-btn
-                  rounded
-                  class="boutton"
-                  dark
-                  color="#363740"
-                  @click="$router.push('/listPost')"
-                  >Posts (1)</v-btn
-                >
-                </v-col>
-                <v-col>
-                <v-btn
-                  rounded
-                  class="boutton"
-                  dark
-                  color="#363740"
-                  @click="$router.push('/listComment')"
-                  >Commentaires (1)</v-btn
-                >
-                </v-col>
-                <v-col></v-col>
+                  <v-col>
+                    <v-btn
+                      rounded
+                      class="boutton"
+                      dark
+                      color="#363740"
+                      @click="$router.push('/listPost/' + emailUser + '/Oui')"
+                      >Posts ({{ nbReportPost }})</v-btn
+                    >
+                  </v-col>
+                  <v-col>
+                    <v-btn
+                      rounded
+                      class="boutton"
+                      dark
+                      color="#363740"
+                      @click="$router.push('/listComment/ /' + emailUser + '/Oui')"
+                      >Commentaires ({{ nbReportComment }})</v-btn
+                    >
+                  </v-col>
+                  <v-col></v-col>
                 </v-row>
               </v-col>
             </v-row>
@@ -203,18 +215,198 @@ body {
 
 
 
-<script lang="ts">
-import navigationDrawer from "../components/navigationDrawer.vue";
 
-export default {
+<script lang="ts">
+import Vue from "vue";
+import navigationDrawer from "../components/navigationDrawer.vue";
+import axios from "axios";
+
+const API_URL = process.env.VUE_APP_API_URL as string;
+
+export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
   },
   data() {
     return {
-      itemsSelect: ["Foo", "Bar", "Fizz", "Buzz"],
+      emailAdmin: localStorage.getItem("emailAdmin"),
+      token: localStorage.getItem("token"),
+
+      idUser: "",
+      emailUser: "",
+      firstname: "",
+      lastname: "",
+      accountType: "",
+      status: "",
+      domoBalance: "",
+      lastActivity: "",
+      createdAt: "",
+
+      nbPost: 0,
+      nbMessage: 0,
+      nbReportPost: 0,
+      nbReportComment: 0,
     };
   },
-};
+  methods: {
+    getUser(emailUser: string) {
+      axios
+        .post(
+          API_URL + "/admin/searchUser",
+          { emailUser: emailUser },
+          { headers: { Authorization: "Bearer " + this.token } }
+        )
+        .then((response) => {
+          if (response.data.message == "succès (non-vide)") {
+            this.idUser = response.data.users[0]._id;
+            this.firstname = response.data.users[0].firstname;
+            this.lastname = response.data.users[0].lastname;
+            this.accountType = response.data.users[0].accountType;
+            this.status = response.data.users[0].status;
+            this.domoBalance = response.data.users[0].domoBalance;
+            this.lastActivity = response.data.users[0].lastActivity;
+            this.createdAt = response.data.users[0].createdAt;
+          }
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log(error);
+        });
+    },
+      getUserStat(emailUser: string) {
+      // Posts
+      axios
+        .post(
+          API_URL + "/admin/searchPost",
+          { emailUser: emailUser },
+          { headers: { Authorization: "Bearer " + this.token } }
+        )
+        .then((response) => {
+          if (response.data.message == "succès (non-vide)") {
+             if (response.data.posts)
+              this.nbPost = response.data.posts.length
+            else
+              this.nbPost = 0
+          }
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log(error);
+        });
+
+
+        // Posts report
+        axios
+        .post(
+          API_URL + "/admin/searchPost",
+          { emailUser: emailUser, haveReport: 0 },
+          { headers: { Authorization: "Bearer " + this.token } }
+        )
+        .then((response) => {
+          if (response.data.message == "succès (non-vide)") {
+            if (response.data.posts)
+              this.nbReportPost = response.data.posts.length
+            else
+              this.nbReportPost = 0
+          }
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log(error);
+        });
+
+        // Message 
+        axios
+        .post(
+          API_URL + "/admin/searchMessage",
+          { emailSender: emailUser, haveReport: 0 },
+          { headers: { Authorization: "Bearer " + this.token } }
+        )
+        .then((response) => {
+          if (response.data.message == "succès (non-vide)") {
+            if (response.data.messages)
+              this.nbMessage = response.data.messages.length
+            else
+              this.nbMessage = 0
+          }
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log(error);
+        });
+
+        // Comment report
+        axios
+        .post(
+          API_URL + "/admin/searchComment",
+          { emailSender: emailUser, haveReport: 0 },
+          { headers: { Authorization: "Bearer " + this.token } }
+        )
+        .then((response) => {
+          if (response.data.message == "succès (non-vide)") {
+            if (response.data.comments)
+              this.nbReportComment = response.data.comments.length
+            else
+              this.nbReportComment = 0
+          }
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log(error);
+        });
+
+    },
+    updateUser() {
+      const parameters = {
+        email: this.emailUser,
+        firstname: this.firstname,
+        lastname: this.lastname,
+        accountType: this.accountType,
+        status: this.status,
+      }
+      axios
+        .put(
+          API_URL + "/admin/editUser",
+          parameters,
+          { headers: { Authorization: "Bearer " + this.token } }
+        )
+        .then((response) => {
+          if (response.status == 200) {
+            alert("Mise à jour de l'utilisateur réussit !");
+            this.$router.push("/listUser")
+          }
+        })
+        .catch(function (error) {
+          alert("erreur mise à jour utilisateur !");
+          console.log(error);
+        });
+    },
+
+      blockUser() {
+      axios
+        .put(
+          API_URL + "/admin/blockUser",
+          { email: this.emailUser },
+          { headers: { Authorization: "Bearer " + this.token } }
+        )
+        .then((response) => {
+          if (response.status == 200) {
+            alert("L'utilisateur à été bloqué avec succès");
+            this.$router.push("/listUser")
+          }
+        })
+        .catch(function (error) {
+          alert("erreur blocage utilisateur !");
+          console.log(error);
+        });
+    },
+  },
+  
+  mounted() {
+    this.emailUser = this.$route.params.emailUser;
+    this.getUser(this.emailUser);
+    this.getUserStat(this.emailUser)
+  },
+});
 </script>

@@ -234,7 +234,6 @@ import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
 
 const API_URL = process.env.VUE_APP_API_URL as string;
-const token = localStorage.getItem("token");
 
 export default Vue.extend({
   name: "App",
@@ -304,7 +303,7 @@ export default Vue.extend({
 
       axios
         .post(API_URL + "/admin/searchBill", parameters, {
-          headers: { Authorization: "Bearer " + token },
+          headers: { Authorization: "Bearer " + this.token },
         })
         .then((response) => {
 

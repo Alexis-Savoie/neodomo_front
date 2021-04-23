@@ -3,7 +3,7 @@
     <v-app-bar app flat color="#E5E5E5">
       <v-toolbar-title style="padding-left: 2em">Messages</v-toolbar-title>
       <v-spacer></v-spacer>
-      <div :class="`text-${model}`">emailAdmin@mail.com</div>
+      <div>{{ emailAdmin }}</div>
     </v-app-bar>
     <navigationDrawer />
 
@@ -26,7 +26,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listMessage')"
+                  @click="deleteMessage()"
                   >Supprimer</v-btn
                 >
               </v-col>
@@ -36,7 +36,7 @@
                   class="boutton"
                   dark
                   color="#363740"
-                  @click="$router.push('/listMessage')"
+                  @click="deleteMessageAndBlock()"
                   >Supprimer et bloquer</v-btn
                 >
               </v-col>
@@ -55,7 +55,9 @@
                   disabled
                   label=""
                   rounded
+                  v-model="idMessage"
                 ></v-text-field>
+                <!--
                 <v-card-text class="text-center">Email</v-card-text>
                 <v-text-field
                   solo
@@ -64,6 +66,7 @@
                   label=""
                   rounded
                 ></v-text-field>
+                -->
                 <v-card-text class="text-center">Date</v-card-text>
                 <v-text-field
                   solo
@@ -71,6 +74,7 @@
                   disabled
                   label=""
                   rounded
+                  v-model="createdAt"
                 ></v-text-field>
                 <v-card-text class="text-center">Expéditeur</v-card-text>
                 <v-text-field
@@ -79,6 +83,7 @@
                   disabled
                   label=""
                   rounded
+                  v-model="emailSender"
                 ></v-text-field>
                 <v-card-text class="text-center">Destinataire</v-card-text>
                 <v-text-field
@@ -87,6 +92,7 @@
                   disabled
                   label=""
                   rounded
+                  v-model="emailReceiver"
                 ></v-text-field>
               </v-col>
               <v-divider vertical></v-divider>
@@ -101,10 +107,10 @@
                   disabled
                   name="input-7-4"
                   label="Contenu textuelle"
-                  value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
+                  v-model="textContent"
                 ></v-textarea>
-                <div class="text-center">
-                  <v-btn color="blue" plain>Image </v-btn>
+                <div class="text-center" v-if="this.imageURL != ''">
+                  <v-btn color="blue" plain :href="'//' + this.imageURL">Image</v-btn>
                 </div>
               </v-col>
             </v-row>
@@ -139,18 +145,116 @@ body {
 
 
 
-<script lang="ts">
-import navigationDrawer from "../components/navigationDrawer.vue";
 
-export default {
+<script lang="ts">
+import Vue from "vue";
+import navigationDrawer from "../components/navigationDrawer.vue";
+import axios from "axios";
+
+const API_URL = process.env.VUE_APP_API_URL as string;
+
+
+export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
   },
   data() {
     return {
-      itemsSelect: ["Foo", "Bar", "Fizz", "Buzz"],
+      emailAdmin: localStorage.getItem("emailAdmin"),
+      token: localStorage.getItem("token"),
+
+      idMessage: "",
+      
+      createdAt: "",
+      emailSender: "",
+      emailReceiver: "",
+      textContent: "",
+      imageURL: "",
+      
     };
   },
-};
+  methods: {
+    getMessage(idMessage: string) {
+      axios
+        .post(
+          API_URL + "/admin/searchMessage",
+          { idMessage: idMessage },
+          { headers: { Authorization: "Bearer " + this.token } }
+        )
+        .then((response) => {
+          if (response.data.message == "succès (non-vide)") {
+            this.idMessage = response.data.messages[0]._id;
+            this.createdAt = response.data.messages[0].createdAt;
+            this.emailSender = response.data.messages[0].emailSender;
+            this.emailReceiver = response.data.messages[0].emailReceiver;
+            this.textContent = response.data.messages[0].textContent;
+            this.imageURL = response.data.messages[0].imageURL;
+          }
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log(error);
+        });
+    },
+    deleteMessage(idMessage: string) {
+      axios
+        .delete(API_URL + "/admin/deletePost", {
+          headers: {
+            Authorization: "Bearer " + this.token,
+          },
+          data: {
+            idMessage: this.idMessage,
+          },
+        })
+        .then((response) => {
+          alert("L'opération s'est effectué avec succès !")
+          this.$router.push("/listMessage")
+
+        })
+        .catch(function (error) {
+          alert("erreur suppression message !");
+          console.log(error);
+        });
+    },
+    deleteMessageAndBlock(idMessage: string) {
+      axios
+        .delete(API_URL + "/admin/deleteMessage", {
+          headers: {
+            Authorization: "Bearer " + this.token,
+          },
+          data: {
+            idMessage: this.idMessage,
+          },
+        })
+        .then((response) => {
+          console.log(response.data)
+          if (response.status == 200) {
+            axios
+              .put(API_URL + "/admin/blockUser",           
+              { email: this.emailSender },
+              { headers: { Authorization: "Bearer " + this.token } })
+              .then((response) => {
+                if (response.status == 200) {
+                  alert("L'opération s'est effectué avec succès !")
+                  this.$router.push("/listMessage")
+                }
+              })
+              .catch(function (error) {
+                alert("erreur blocage !");
+                console.log(error);
+              });
+          }
+        })
+        .catch(function (error) {
+          alert("erreur suppression post !");
+          console.log(error);
+        });
+    },
+  },
+  mounted() {
+    this.idMessage = this.$route.params.idMessage;
+    this.getMessage(this.idMessage);
+  },
+});
 </script>

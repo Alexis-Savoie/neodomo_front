@@ -55,7 +55,6 @@ import Vue from "vue";
 import axios from "axios";
 
 const API_URL = process.env.VUE_APP_API_URL as string;
-const token = localStorage.getItem("token");
 
 export default Vue.extend({
   name: "App",

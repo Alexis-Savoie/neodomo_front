@@ -3,7 +3,7 @@
     <v-app-bar app flat color="#E5E5E5">
       <v-toolbar-title style="padding-left: 2em">Gamification</v-toolbar-title>
       <v-spacer></v-spacer>
-      <div :class="`text-${model}`">emailAdmin@mail.com</div>
+      <div>{{ emailAdmin }}</div>
     </v-app-bar>
     <navigationDrawer />
 
@@ -180,8 +180,8 @@ export default Vue.extend({
   },
   data(): any {
     return {
-      emailAdmin: "",
-      token: localStorage.getItem("token") || "",
+      emailAdmin: localStorage.getItem("emalToken") || "",
+      token: localStorage.getItem("token") || "", 
 
       labels: [],
       data: [],
@@ -213,7 +213,6 @@ export default Vue.extend({
     };
   },
   mounted() {
-    this.emailAdmin = localStorage.getItem("emailAdmin");
     this.updateStats(this.currentProduct.value, "", "");
   },
   methods: {

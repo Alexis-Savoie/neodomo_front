@@ -1,7 +1,7 @@
 <template>
   <v-app class="black">
     <v-app-bar app flat color="#E5E5E5">
-      <v-toolbar-title style="padding-left: 2em">Posts</v-toolbar-title>
+      <v-toolbar-title style="padding-left: 2em">Stocks</v-toolbar-title>
       <v-spacer></v-spacer>
       <div>{{ emailAdmin }}</div>
     </v-app-bar>
@@ -15,7 +15,7 @@
             <v-row>
               <v-col>
                 <v-toolbar-title style="padding-left: 12px"
-                  >Ajouter post</v-toolbar-title
+                  >Ajouter produit</v-toolbar-title
                 >
               </v-col>
             </v-row>
@@ -110,7 +110,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      emailAdmin: "",
+      emailAdmin:  localStorage.getItem("emailAdmin") || "",
       token: localStorage.getItem("token") || "",
 
       nameProduct: "",
@@ -156,9 +156,6 @@ export default Vue.extend({
           console.log(error);
         });
     },
-  },
-  mounted() {
-    this.emailAdmin = localStorage.getItem("emailAdmin") || "";
   },
 });
 </script>

@@ -196,8 +196,8 @@ export default Vue.extend({
   },
   data(): any {
     return {
-      emailAdmin: "",
-      token: localStorage.getItem("token") || '',
+      emailAdmin: localStorage.getItem("emalToken") || "",
+      token: localStorage.getItem("token") || "", 
       labels: [],
       data: [],
 
@@ -230,7 +230,6 @@ export default Vue.extend({
     };
   },
   mounted() {
-    this.emailAdmin = localStorage.getItem("emailAdmin");
     console.log("lol : " + this.$route.params.idProduct)
     if (this.$route.params.idProduct == "" || this.$route.params.idProduct == undefined)
       this.currentProduct = {text: "Tous", value: ""}

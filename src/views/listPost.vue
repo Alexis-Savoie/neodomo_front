@@ -17,7 +17,7 @@
             :items-per-page="8"
             class="elevation-1"
           >
-            <!-- Top of the data table (Toolbar) -->
+            <!-- Top of the data table (Toolbar) -->      
 
             <template v-slot:top>
               <v-container fill-height>
@@ -207,7 +207,7 @@ import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
 
 const API_URL = process.env.VUE_APP_API_URL as string;
-const token = localStorage.getItem("token");
+
 
 export default Vue.extend({
   name: "App",
@@ -216,7 +216,8 @@ export default Vue.extend({
   },
   data() {
     return {
-      emailAdmin: "",
+      emailAdmin: localStorage.getItem("emalToken") || "",
+      token: localStorage.getItem("token") || "", 
 
       emailPublisherSearch: "",
       textContentSearch: "",
@@ -269,10 +270,10 @@ export default Vue.extend({
         if (haveReport == "Oui") parameters.createdAtAt = 0;
         if (haveReport == "Non") parameters.createdAtAt = 1;
       }
-      
+      console.log(parameters)
       axios
         .post(API_URL + "/admin/searchPost", parameters, {
-          headers: { Authorization: "Bearer " + token },
+          headers: { Authorization: "Bearer " + this.token },
         })
         .then((response) => {
           if (response.data.message == "succès (non-vide)") {
@@ -300,8 +301,20 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.searchPost("", "", "", "", "", "");
-    this.emailAdmin = localStorage.getItem("emailAdmin") || "";
+    // See specific user post
+    if(this.$route.params.emailUser != "" && this.$route.params.emailUser != undefined)
+      this.emailPublisherSearch = this.$route.params.emailUser
+    else
+      this.emailPublisherSearch = ""
+
+    // See specific user report
+    if(this.$route.params.haveReport == "Oui")
+      this.haveReportSearch = "Oui"
+    else
+      this.haveReportSearch = ""
+
+    
+    this.searchPost("", this.emailPublisherSearch, "", "", "", this.haveReportSearch);
   },
 });
 </script>

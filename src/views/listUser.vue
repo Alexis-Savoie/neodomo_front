@@ -3,7 +3,7 @@
     <v-app-bar app flat color="#E5E5E5">
       <v-toolbar-title style="padding-left: 2em">Utilisateurs</v-toolbar-title>
       <v-spacer></v-spacer>
-      <div :class="`text-${model}`">emailAdmin@mail.com</div>
+      <div>{{ emailAdmin }}</div>
     </v-app-bar>
     <navigationDrawer />
 
@@ -21,25 +21,38 @@
 
             <template v-slot:top>
               <v-container fill-height>
-     
-                  <v-toolbar-title style="padding-right: 0.5em">Liste des utilisateurs</v-toolbar-title>
-                  <v-icon @click="editItem()">mdi-refresh</v-icon>
-                  <v-row ></v-row>
-                  <v-row >
+                <v-toolbar-title style="padding-right: 0.5em"
+                  >Liste des utilisateurs</v-toolbar-title
+                >
+                <v-icon @click="
+                    searchUser(
+                      emailUserSearch,
+                      firstnameSearch,
+                      lastnameSearch,
+                      accountTypeSearch,
+                      createdAtFromSearch,
+                      createdAtAtSearch,
+                      lastActivityFromSearch,
+                      lastActivityAtSearch,
+                    )
+                  ">mdi-refresh</v-icon>
+                <v-row></v-row>
+                <v-row>
                   <v-col>
                     <!-- Search text box -->
                     <v-text-field
                       solo
                       dense
-                      label="email"
+                      label="Email"
                       rounded
                       class="shrink"
                       height="15"
                       style="font-size: 12px"
+                      v-model="emailUserSearch"
                     ></v-text-field>
                   </v-col>
 
-                 <v-col>
+                  <v-col>
                     <!-- Search text box -->
                     <v-text-field
                       solo
@@ -49,6 +62,7 @@
                       class="shrink"
                       height="15"
                       style="font-size: 12px"
+                      v-model="firstnameSearch"
                     ></v-text-field>
                   </v-col>
 
@@ -64,187 +78,192 @@
                       class="shrink"
                       height="15"
                       style="font-size: 12px"
+                      v-model="lastnameSearch"
                     ></v-text-field>
                   </v-col>
                   <v-col>
-                  <v-select
-                    :items="itemsSelect"
-                    label="Type compte"
-                    dense
-                    outlined
-                    style=""
-                  ></v-select>
-                </v-col>
-                  <v-col>
-                  <v-select
-                    :items="itemsSelect"
-                    label="Signalement"
-                    dense
-                    outlined
-                    style=""
-                  ></v-select>
-                </v-col>
-
-                  <!-- date picker -->
-                  <v-col style="padding-top: 0;">
-
-                    <v-menu
-                      ref="menu"
+                    <v-select
+                      :items="itemsSelectAccountType"
+                      label="Type compte"
                       dense
-                      rounded
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
-                      
-
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="date"
-                          label="Créer de"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          style="padding-top: 0;"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-
-                   <v-menu
-                      ref="menu"
-                      dense
-                      rounded
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="date"
-                          label="Créer à"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                          style="padding-top: 0;"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="date" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
+                      outlined
+                      style=""
+                      v-model="accountTypeSearch"
+                    ></v-select>
                   </v-col>
-                  <!-- date picker -->
-                  <v-col style="padding-top: 0;">
-
-                    <v-menu
-                      ref="menu"
+                   <!--
+                  <v-col>
+                   
+                    <v-select
+                      :items="itemsSelectHaveReport"
+                      label="Signalement"
                       dense
-                      rounded
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
-                      
+                      outlined
+                      style=""
+                      v-model="haveReportSearch"
+                    ></v-select>
 
+                  </v-col>
+                  -->
+
+                  <!-- date picker -->
+                  <v-col style="padding-top: 0">
+                    <v-dialog
+                      ref="dialog"
+                      v-model="modal"
+                      :return-value.sync="createdAtFromSearch"
+                      persistent
+                      width="290px"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="date"
+                          v-model="createdAtFromSearch"
                           label="Créer de"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
                           v-on="on"
-                          style="padding-top: 0;"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="date" no-title scrollable>
+                      <v-date-picker
+                        v-model="createdAtFromSearch"
+                        scrollable
+                        header-color="#363740"
+                        color="#363740"
+                        locale="fr-FR"
+                      >
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
+                        <v-btn text color="black" @click="modal = false">
+                          Annuler
                         </v-btn>
                         <v-btn
                           text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
+                          color="black"
+                          @click="$refs.dialog.save(createdAtFromSearch)"
                         >
                           OK
                         </v-btn>
                       </v-date-picker>
-                    </v-menu>
+                    </v-dialog>
 
-                   <v-menu
-                      ref="menu"
-                      dense
-                      rounded
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="date"
-                      transition="scale-transition"
-                      offset-y
+                    <!-- date picker 2-->
+                    <v-dialog
+                      ref="dialog2"
+                      v-model="modal2"
+                      :return-value.sync="createdAtAtSearch"
+                      persistent
+                      width="290px"
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                          v-model="date"
+                          v-model="createdAtAtSearch"
                           label="Créer à"
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
                           v-on="on"
-                          style="padding-top: 0;"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="date" no-title scrollable>
+                      <v-date-picker
+                        v-model="createdAtAtSearch"
+                        scrollable
+                        header-color="#363740"
+                        color="#363740"
+                        locale="fr-FR"
+                      >
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
+                        <v-btn text color="black" @click="modal2 = false">
+                          Annuler
                         </v-btn>
                         <v-btn
                           text
-                          color="primary"
-                          @click="$refs.menu.save(date)"
+                          color="black"
+                          @click="$refs.dialog2.save(createdAtAtSearch)"
                         >
                           OK
                         </v-btn>
                       </v-date-picker>
-                    </v-menu>
+                    </v-dialog>
+                  </v-col>
+
+                  <v-col style="padding-top: 0">
+                    <!-- date picker 3-->
+                    <v-dialog
+                      ref="dialog3"
+                      v-model="modal3"
+                      :return-value.sync="lastActivityFromSearch"
+                      persistent
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="lastActivityFromSearch"
+                          label="Actif de"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="lastActivityFromSearch" scrollable header-color="#363740" color="#363740" locale="fr-FR">
+                        <v-spacer></v-spacer>
+                        <v-btn text color="black" @click="modal3 = false">
+                          Annuler
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="black"
+                          @click="$refs.dialog3.save(lastActivityFromSearch)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-dialog>
+
+                                        <!-- date picker 2-->
+                    <v-dialog
+                      ref="dialog4"
+                      v-model="modal4"
+                      :return-value.sync="lastActivityAtSearch"
+                      persistent
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="lastActivityAtSearch"
+                          label="Actif à"
+                          prepend-icon="mdi-calendar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="lastActivityAtSearch" scrollable header-color="#363740" color="#363740" locale="fr-FR">
+                        <v-spacer></v-spacer>
+                        <v-btn text color="black" @click="modal4 = false">
+                          Annuler
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="black"
+                          @click="$refs.dialog4.save(lastActivityAtSearch)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-dialog>
                   </v-col>
                 </v-row>
               </v-container>
             </template>
 
-            <template v-slot:[`item.actions`]>
-              <v-icon small @click="$router.push('/detailUser')">mdi-dots-horizontal</v-icon>
+            <template v-slot:[`item.actions`]="t">
+              <v-icon
+                small
+                v-if="t.item.emailUser != undefined"
+                @click="$router.push('/detailUser/' + t.item.emailUser)"
+                >mdi-dots-horizontal</v-icon
+              >
             </template>
           </v-data-table>
         </v-card>
@@ -278,96 +297,112 @@ body {
 
 
 <script lang="ts">
+import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
+import axios from "axios";
 
-export default {
+const API_URL = process.env.VUE_APP_API_URL as string;
+
+export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
   },
   data() {
     return {
+      emailAdmin: localStorage.getItem("emalToken") || "",
+      token: localStorage.getItem("token") || "",
+
+      emailUserSearch: "",
+      firstnameSearch: "",
+      lastnameSearch: "",
+      accountTypeSearch: "",
+      haveReportSearch: "",
+      createdAtFromSearch: new Date().toISOString().substr(0, 10),
+      createdAtAtSearch: new Date().toISOString().substr(0, 10),
+      lastActivityFromSearch: new Date().toISOString().substr(0, 10),
+      lastActivityAtSearch: new Date().toISOString().substr(0, 10),
+
+      modal: false,
+      modal2: false,
+      modal3: false,
+      modal4: false,
+
       headers: [
         {
           text: "email",
           align: "start",
-          value: "email",
+          value: "emailUser",
         },
-        { text: "Prénom", value: "userFirstname" },
-        { text: "Nom", value: "userName" },
+        { text: "Prénom", value: "firstname" },
+        { text: "Nom", value: "lastname" },
         { text: "Inscrit le", value: "createdAt" },
-        { text: "Status", value: "status" },
+        { text: "Type", value: "accountType" },
         { text: "Bloqué", value: "isBlocked" },
         { text: "Actions", value: "actions", sortable: false },
       ],
-      items: [
-        {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
-        },
-        {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
-        },
-        {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
-        },
-        {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
-        },
-        {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
-        },
-        {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
-        },
-        {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
-        },
-        {
-          email: "filleSympa@email.fr",
-          userFirstname: "Ange",
-          userName: "Sereine",
-          createdAt: "16/12/2020",
-          status: "CDA",
-          isBlocked: "non",
-        },
-      ],
-      itemsSelect: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+      items: [{}],
+      
+      itemsSelectAccountType: ["Tous", "eleve", "association", "staff"],
+      itemsSelectHaveReport: ["Tous", "Oui", "Non"],
     };
   },
-};
+
+  methods: {
+    searchUser(
+      emailUser: string,
+      firstname: string,
+      lastname: string,
+      accountType: string,
+      createdAtFrom: string,
+      createdAtAt: string,
+      lastActivityFrom: string,
+      lastActivityAt: string
+    ) {
+      this.items = [{}];
+
+      const parameters = {} as any;
+      if (emailUser != "") parameters.emailUser = emailUser;
+      if (firstname != "") parameters.firstname = firstname;
+      if (lastname != "") parameters.lastname = lastname;
+      if (accountType != "" && accountType != "Tous") parameters.accountType = accountType;
+      if (createdAtFrom != "") parameters.createdAtFrom = createdAtFrom;
+      if (createdAtAt != "") parameters.createdAtAt = createdAtAt;
+      if (lastActivityFrom != "")
+        parameters.lastActivityFrom = lastActivityFrom;
+      if (lastActivityAt != "") parameters.lastActivityAt = lastActivityAt;
+
+      axios
+        .post(API_URL + "/admin/searchUser", parameters, {
+          headers: { Authorization: "Bearer " + this.token },
+        })
+        .then((response) => {
+          if (response.data.message == "succès (non-vide)") {
+            const items = [];
+            for (let i = 0; i < response.data.users.length; i++) {
+              const item = {
+                emailUser: response.data.users[i].emailUser,
+                firstname: response.data.users[i].firstname,
+                lastname: response.data.users[i].lastname,
+                createdAt: response.data.users[i].createdAt,
+                accountType: response.data.users[i].accountType,
+                isBlocked: response.data.users[i].isBlocked,
+              };
+              items[i] = item;
+            }
+
+            this.items = items;
+          }
+        })
+        .catch(function (error) {
+          alert("erreur !");
+          console.log("erreur");
+          console.log(error.response);
+        });
+    },
+  },
+  mounted() {
+    this.searchUser("", "", "", "", "", "", "", "");
+  },
+});
 </script>

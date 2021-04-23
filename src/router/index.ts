@@ -37,7 +37,7 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/forgotPassword.vue')
   },
   {
-    path: '/listPost',
+    path: '/listPost/:emailUser?/:haveReport?',
     name: 'listPost',
     beforeEnter : guardMyroute,
     component: () => import('../views/listPost.vue')
@@ -49,13 +49,13 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/detailPost.vue')
   },
   {
-    path: '/listComment/:idPost?',
+    path: '/listComment/:idPost?/:emailUser?/:haveReport?',
     name: 'listComment',
     beforeEnter : guardMyroute,
     component: () => import('../views/listComment.vue')
   },
   {
-    path: '/listMessage',
+    path: '/listMessage/:emailUser?',
     name: 'listMessage',
     beforeEnter : guardMyroute,
     component: () => import('../views/listMessage.vue')
@@ -73,7 +73,7 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/listUser.vue')
   },
   {
-    path: '/detailUser/:idUser?',
+    path: '/detailUser/:emailUser?',
     name: 'detailUser',
     beforeEnter : guardMyroute,
     component: () => import('../views/detailUser.vue')

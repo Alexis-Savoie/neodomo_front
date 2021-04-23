@@ -244,7 +244,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      emailAdmin: "",
+      emailAdmin: localStorage.getItem("emailAdmin") || "",
       token: localStorage.getItem("token") || "",
 
       idPostSearch: "",
@@ -356,9 +356,24 @@ export default Vue.extend({
     },
   },
   mounted() {
-    this.idPostSearch = this.$route.params.idPost || "";
-    this.emailAdmin = localStorage.getItem("emailAdmin") || "";
-    this.searchComment(this.idPostSearch, "", "", "", "", "", "");
+    if(this.$route.params.idPost != "" && this.$route.params.idPost != " " && this.$route.params.idPost != undefined)
+      this.idPostSearch = this.$route.params.idPost
+    else
+      this.idPostSearch = ""
+
+    // See specific user post
+    if(this.$route.params.emailUser != "" && this.$route.params.emailUser != undefined)
+      this.emailSenderSearch = this.$route.params.emailUser
+    else
+      this.emailSenderSearch = ""
+
+    // See specific user report
+    if(this.$route.params.haveReport == "Oui")
+      this.haveReportSearch = "Oui"
+    else
+      this.haveReportSearch = ""
+
+    this.searchComment(this.idPostSearch, this.emailSenderSearch, "", "", this.haveReportSearch, "", "");
   },
 });
 </script>
