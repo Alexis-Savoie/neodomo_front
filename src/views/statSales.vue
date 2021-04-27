@@ -261,7 +261,7 @@ export default Vue.extend({
       if (createdAtAt != "") parameters.createdAtAt = createdAtAt;
 
       axios
-        .post(API_URL + "/admin/searchBill", parameters, {
+        .post(API_URL + "/admin/searchPurchase", parameters, {
           headers: { Authorization: "Bearer " + this.token },
         })
         .then((response) => {
@@ -269,8 +269,8 @@ export default Vue.extend({
             const resultArr = [] as any;
 
             // REmove time from date
-            for (let i = 0; i < response.data.bills.length; i++) {
-              resultArr.push(response.data.bills[i].createdAt.split("T")[0]);
+            for (let i = 0; i < response.data.purchases.length; i++) {
+              resultArr.push(response.data.purchases[i].createdAt.split("T")[0]);
             }
 
             // Conut number of sells for each day
@@ -334,7 +334,6 @@ export default Vue.extend({
   },
   watch: {
     currentProduct: function (val: any) {
-      console.log("changement product");
       this.updateStats(this.currentProduct.value, this.createdAtFromSearch, this.createdAtAtSearch)
     },
     createdAtFromSearch: function (val: any) {
