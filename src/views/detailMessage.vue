@@ -110,7 +110,10 @@
                   v-model="textContent"
                 ></v-textarea>
                 <div class="text-center" v-if="this.imageURL != ''">
-                  <v-btn color="blue" plain :href="'//' + this.imageURL">Image</v-btn>
+                  <v-card-text class="text-center">Image</v-card-text>
+                  <viewer>
+                    <img style="max-width: 100px" :src="this.imageURL">
+                  </viewer>
                 </div>
               </v-col>
             </v-row>
@@ -150,6 +153,9 @@ body {
 import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer'
+Vue.use(Viewer)
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 
@@ -196,6 +202,10 @@ export default Vue.extend({
           alert("erreur !");
           console.log(error);
         });
+    },
+
+    show() {
+      //this.$viewer.show()
     },
     deleteMessage(idMessage: string) {
       axios

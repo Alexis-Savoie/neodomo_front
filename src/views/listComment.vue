@@ -312,7 +312,7 @@ export default Vue.extend({
                 idComment: response.data.comments[i]._id,
                 idPost: response.data.comments[i].idPost,
                 emailSender: response.data.comments[i].emailSender,
-                textContent: response.data.comments[i].textContent,
+                textContent: response.data.comments[i].textContent.substring(0,40) + "...",
                 createdAt: response.data.comments[i].createdAt,
                 replyTo: response.data.comments[i].replyTo,
               };
