@@ -128,20 +128,18 @@
                       this.listImage.length > 0 && this.listImage[0].URL != ''
                     "
                   >
-                    <v-btn
-                      color="blue"
-                      plain
-                      :href="'//' + this.listImage[0].URL"
-                      target="_blank"
-                      >Image 1</v-btn
-                    >
+                  <viewer>
+                    <img style="max-width: 100px" :src="this.listImage[0].URL">
+                  </viewer>
                     <div
                       class="text-center"
                       v-if="
                         this.listImage.length > 1 && this.listImage[1].URL != ''
                       "
                     >
-                      <v-btn color="blue" plain :href="'//' + this.listImage[1].URL">Image 2</v-btn>
+                    <viewer>
+                    <img style="max-width: 100px" :src="this.listImage[1].URL">
+                    </viewer>
                     </div>
                     <div
                       class="text-center"
@@ -149,7 +147,9 @@
                         this.listImage.length > 2 && this.listImage[2].URL != ''
                       "
                     >
-                      <v-btn color="blue" plain :href="'//' + this.listImage[2].URL">Image 3</v-btn>
+                      <viewer>
+                    <img style="max-width: 100px" :src="this.listImage[2].URL">
+                  </viewer>
                     </div>
                     <div
                       class="text-center"
@@ -157,7 +157,9 @@
                         this.listImage.length > 3 && this.listImage[3].URL != ''
                       "
                     >
-                      <v-btn color="blue" plain :href="'//' + this.listImage[3].URL">Image 4</v-btn>
+                      <viewer>
+                    <img style="max-width: 100px" :src="this.listImage[3].URL">
+                  </viewer>
                     </div>
                   </div>
                 </div>
@@ -214,6 +216,9 @@ body {
 import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer'
+Vue.use(Viewer)
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 

@@ -281,7 +281,7 @@ export default Vue.extend({
             for (let i = 0; i < response.data.posts.length; i++) {
               const item = {
                 idPost: response.data.posts[i]._id,
-                textContent: response.data.posts[i].textContent,
+                textContent: response.data.posts[i].textContent.substring(0,40) + "...",
                 emailPublisher: response.data.posts[i].emailPublisher,
                 createdAt: response.data.posts[i].createdAt,
                 nbLike: response.data.posts[i].listLike.length,

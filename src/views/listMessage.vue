@@ -192,6 +192,7 @@ import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
 
+
 const API_URL = process.env.VUE_APP_API_URL as string;
 
 export default Vue.extend({
@@ -258,7 +259,7 @@ export default Vue.extend({
             for (let i = 0; i < response.data.messages.length; i++) {
               const item = {
                 idMessage: response.data.messages[i]._id,
-                textContent: response.data.messages[i].textContent,
+                textContent: response.data.messages[i].textContent.substring(0,40) + "...",
                 emailSender: response.data.messages[i].emailSender,
                 emailReceiver: response.data.messages[i].emailReceiver,
                 createdAt: response.data.messages[i].createdAt,
