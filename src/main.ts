@@ -6,7 +6,7 @@ import vuetify from './plugins/vuetify';
 
 
 Vue.config.productionTip = false
-
+export const eventBus = new Vue(); // added line
 
 new Vue({
   router,

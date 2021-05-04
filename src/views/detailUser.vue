@@ -32,12 +32,22 @@
               </v-col>
               <v-col>
                 <v-btn
+                  v-if="isBlocked == false"
                   rounded
                   class="boutton"
                   dark
                   color="#363740"
                   @click="blockUser()"
                   >Bloquer</v-btn
+                >
+                <v-btn
+                  v-if="isBlocked == true"
+                  rounded
+                  class="boutton"
+                  dark
+                  color="#363740"
+                  @click="blockUser()"
+                  >Débloquer</v-btn
                 >
               </v-col>
               <v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col
@@ -87,14 +97,18 @@
                   v-model="firstname"
                 ></v-text-field>
                 <v-card-text class="text-center">Type</v-card-text>
-                <v-text-field
-                  class="centered-input"
-                  solo
+                <v-select
+                  :items="itemsSelectAccountType"
+                  label="Type compte"
                   dense
-                  label=""
-                  rounded
+                  outlined
                   v-model="accountType"
-                ></v-text-field>
+                  align="center"
+                  justify="center"
+                  class="text-center"
+                  style="justify-content: center"
+                >
+                </v-select>
                 <v-card-text class="text-center">Status</v-card-text>
                 <v-text-field
                   solo
@@ -176,9 +190,14 @@
                       class="boutton"
                       dark
                       color="#363740"
-                      @click="$router.push('/listComment/ /' + emailUser + '/Oui')"
+                      @click="
+                        $router.push('/listComment/ /' + emailUser + '/Oui')
+                      "
                       >Commentaires ({{ nbReportComment }})</v-btn
                     >
+
+                  <basicAlert />
+                    
                   </v-col>
                   <v-col></v-col>
                 </v-row>
@@ -219,6 +238,8 @@ body {
 <script lang="ts">
 import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
+import basicAlert from "../components/basicAlert.vue";
+import { eventBus } from "../main"
 import axios from "axios";
 
 const API_URL = process.env.VUE_APP_API_URL as string;
@@ -227,6 +248,7 @@ export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
+    basicAlert
   },
   data() {
     return {
@@ -242,14 +264,19 @@ export default Vue.extend({
       domoBalance: "",
       lastActivity: "",
       createdAt: "",
+      isBlocked: false,
 
       nbPost: 0,
       nbMessage: 0,
       nbReportPost: 0,
       nbReportComment: 0,
+
+      itemsSelectAccountType: ["Tous", "eleve", "association", "staff"],
+
     };
   },
   methods: {
+
     getUser(emailUser: string) {
       axios
         .post(
@@ -267,14 +294,17 @@ export default Vue.extend({
             this.domoBalance = response.data.users[0].domoBalance;
             this.lastActivity = response.data.users[0].lastActivity;
             this.createdAt = response.data.users[0].createdAt;
+            this.isBlocked = response.data.users[0].isBlocked;
           }
         })
-        .catch(function (error) {
-          alert("erreur !");
+        .catch(error => {
+
+
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
           console.log(error);
         });
     },
-      getUserStat(emailUser: string) {
+    getUserStat(emailUser: string) {
       // Posts
       axios
         .post(
@@ -284,20 +314,17 @@ export default Vue.extend({
         )
         .then((response) => {
           if (response.data.message == "succès (non-vide)") {
-             if (response.data.posts)
-              this.nbPost = response.data.posts.length
-            else
-              this.nbPost = 0
+            if (response.data.posts) this.nbPost = response.data.posts.length;
+            else this.nbPost = 0;
           }
         })
-        .catch(function (error) {
-          alert("erreur !");
+        .catch(error => {
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
           console.log(error);
         });
 
-
-        // Posts report
-        axios
+      // Posts report
+      axios
         .post(
           API_URL + "/admin/searchPost",
           { emailUser: emailUser, haveReport: 0 },
@@ -306,9 +333,8 @@ export default Vue.extend({
         .then((response) => {
           if (response.data.message == "succès (non-vide)") {
             if (response.data.posts)
-              this.nbReportPost = response.data.posts.length
-            else
-              this.nbReportPost = 0
+              this.nbReportPost = response.data.posts.length;
+            else this.nbReportPost = 0;
           }
         })
         .catch(function (error) {
@@ -316,8 +342,8 @@ export default Vue.extend({
           console.log(error);
         });
 
-        // Message 
-        axios
+      // Message
+      axios
         .post(
           API_URL + "/admin/searchMessage",
           { emailSender: emailUser, haveReport: 0 },
@@ -326,9 +352,8 @@ export default Vue.extend({
         .then((response) => {
           if (response.data.message == "succès (non-vide)") {
             if (response.data.messages)
-              this.nbMessage = response.data.messages.length
-            else
-              this.nbMessage = 0
+              this.nbMessage = response.data.messages.length;
+            else this.nbMessage = 0;
           }
         })
         .catch(function (error) {
@@ -336,8 +361,8 @@ export default Vue.extend({
           console.log(error);
         });
 
-        // Comment report
-        axios
+      // Comment report
+      axios
         .post(
           API_URL + "/admin/searchComment",
           { emailSender: emailUser, haveReport: 0 },
@@ -346,16 +371,14 @@ export default Vue.extend({
         .then((response) => {
           if (response.data.message == "succès (non-vide)") {
             if (response.data.comments)
-              this.nbReportComment = response.data.comments.length
-            else
-              this.nbReportComment = 0
+              this.nbReportComment = response.data.comments.length;
+            else this.nbReportComment = 0;
           }
         })
         .catch(function (error) {
           alert("erreur !");
           console.log(error);
         });
-
     },
     updateUser() {
       const parameters = {
@@ -364,26 +387,23 @@ export default Vue.extend({
         lastname: this.lastname,
         accountType: this.accountType,
         status: this.status,
-      }
+      };
       axios
-        .put(
-          API_URL + "/admin/editUser",
-          parameters,
-          { headers: { Authorization: "Bearer " + this.token } }
-        )
+        .put(API_URL + "/admin/editUser", parameters, {
+          headers: { Authorization: "Bearer " + this.token },
+        })
         .then((response) => {
           if (response.status == 200) {
-            alert("Mise à jour de l'utilisateur réussit !");
-            this.$router.push("/listUser")
+            eventBus.$emit('openAlert', "Information", "Mise à jour de l'utilisateur réussit !", '/listUser');
           }
         })
-        .catch(function (error) {
-          alert("erreur mise à jour utilisateur !");
+        .catch(error => {
+          eventBus.$emit('openAlert', 'Erreur', "Erreur mise à jour utilisateur !", '');
           console.log(error);
         });
     },
 
-      blockUser() {
+    blockUser() {
       axios
         .put(
           API_URL + "/admin/blockUser",
@@ -392,21 +412,25 @@ export default Vue.extend({
         )
         .then((response) => {
           if (response.status == 200) {
-            alert("L'utilisateur à été bloqué avec succès");
-            this.$router.push("/listUser")
+            console.log("")
+            if (this.isBlocked == false)
+              eventBus.$emit('openAlert', 'Information', "L'utilisateur à été bloqué avec succès", '/listUser');
+            else 
+              eventBus.$emit('openAlert', 'Information', "L'utilisateur à été débloqué avec succès", '/listUser');
           }
         })
-        .catch(function (error) {
-          alert("erreur blocage utilisateur !");
+        .catch(error => {
+          eventBus.$emit('openAlert', 'Erreur', "Erreur blocage utilisateur !", '');
           console.log(error);
         });
     },
   },
-  
+
   mounted() {
     this.emailUser = this.$route.params.emailUser;
     this.getUser(this.emailUser);
-    this.getUserStat(this.emailUser)
+    this.getUserStat(this.emailUser);
+    
   },
 });
 </script>

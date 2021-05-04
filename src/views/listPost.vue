@@ -208,6 +208,11 @@ import axios from "axios";
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 
+const fromDate = new Date()
+fromDate.setDate(fromDate.getDate() - 30)
+const atDate = new Date()
+atDate.setDate(fromDate.getDate() + 1)
+
 
 export default Vue.extend({
   name: "App",
@@ -222,8 +227,8 @@ export default Vue.extend({
       emailPublisherSearch: "",
       textContentSearch: "",
       haveReportSearch: "",
-      createdAtFromSearch: new Date().toISOString().substr(0, 10),
-      createdAtAtSearch: new Date().toISOString().substr(0, 10),
+      createdAtFromSearch: fromDate.toISOString().substr(0, 10),
+      createdAtAtSearch: atDate.toISOString().substr(0, 10),
 
 
       modal: false,
