@@ -27,6 +27,7 @@
           </v-card-actions>
         </v-card>
       </v-container>
+      <basicAlert />
     </v-main>
   </v-app>
 </template>
@@ -53,12 +54,14 @@ body {
 <script lang="ts">
 import Vue from "vue";
 import axios from "axios";
+import basicAlert from "../components/basicAlert.vue";
+import { eventBus } from "../main"
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 
 export default Vue.extend({
   name: "App",
-  components: {},
+  components: { basicAlert },
   data() {
     return {
       email: ""
@@ -74,13 +77,11 @@ export default Vue.extend({
         .post(API_URL + "/admin/forgotPassword", { email: email })
         .then((response) => {
           if (response.status == 200) {
-             alert("Un email contenant un mot de passe temporaire à été envoyé.")
-             this.$router.push('/login')
-
+            eventBus.$emit('openAlert', 'Information', 'Un email contenant un mot de passe temporaire à été envoyé', '/login');
           }
         })
         .catch(function (error) {
-          alert("erreur ! Email invalide ou inexistant !");
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur ! Email invalide ou inexistant !', '');
           console.log(error);
         });
     },

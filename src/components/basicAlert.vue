@@ -48,7 +48,6 @@ export default Vue.extend({
    created() {
     eventBus.$on('openAlert', (title: string, content: string, goToRoute: string) => {
         this.openAlert(title, content, goToRoute)
-        console.log("epic emit !!!!!!!!!!")
     })
    },
    

@@ -200,6 +200,7 @@
           </v-data-table>
         </v-card>
       </v-container>
+      <basicAlert />
     </v-main>
   </v-app>
 </template>
@@ -232,6 +233,8 @@ body {
 import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
+import basicAlert from "../components/basicAlert.vue";
+import { eventBus } from "../main"
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 
@@ -244,6 +247,7 @@ export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
+    basicAlert
   },
   data() {
     return {
@@ -304,7 +308,6 @@ export default Vue.extend({
       if (createdAtAt != "")
         parameters.createdAtAt = createdAtAt;
 
-      console.log(parameters);
 
       axios
         .post(API_URL + "/admin/searchBill", parameters, {
@@ -331,8 +334,7 @@ export default Vue.extend({
           }
         })
         .catch(function (error) {
-          alert("erreur !");
-          console.log("erreur");
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
           console.log(error);
         });
     },

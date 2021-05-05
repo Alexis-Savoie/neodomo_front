@@ -46,6 +46,7 @@
           </v-card-actions>
         </v-card>
       </v-container>
+      <basicAlert />
     </v-main>
   </v-app>
 </template>
@@ -58,13 +59,15 @@
 import Vue from "vue";
 import router from "../router";
 import axios from "axios";
+import basicAlert from "../components/basicAlert.vue";
+import { eventBus } from "../main"
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 
 export default Vue.extend({
   name: "Login",
   props: {},
-  components: {},
+  components: { basicAlert },
   data: () => ({
     email: "",
     password: "",
@@ -74,7 +77,7 @@ export default Vue.extend({
   methods: {
     Login() {
       if (this.email == "" || this.password == "")
-        alert("Veuillez rentrez des identifiants !");
+        eventBus.$emit('openAlert', 'Erreur', 'Veuillez rentrez des identifiants !', '');
       else {
         axios
           .post(API_URL + "/admin/login", {
@@ -93,14 +96,14 @@ export default Vue.extend({
           })
           .catch(function (error) {
             if (error.response.status == 403) {
-              alert("Syntaxe des identifiants invalide !");
+              eventBus.$emit('openAlert', 'Erreur', 'Syntaxe des identifiants invalide !', '');
             }
             if (error.response.status == 400) {
               if (error.response.data.message != "Identifiants incorrect") {
-                alert("Trop de tentatives ! réessayer plus tard");
+                eventBus.$emit('openAlert', 'Erreur', 'Trop de tentatives ! réessayer plus tard', '');
               }
               else {
-                alert("Identifiants incorrect !");
+                eventBus.$emit('openAlert', 'Erreur', 'Identifiants incorrect !', '');
               }
             }
           });

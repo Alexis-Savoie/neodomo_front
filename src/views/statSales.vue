@@ -151,6 +151,7 @@
           </v-container>
         </v-card>
       </v-container>
+      <basicAlert />
     </v-main>
   </v-app>
 </template>
@@ -184,8 +185,15 @@ import navigationDrawer from "../components/navigationDrawer.vue";
 import LineChart from "../components/lineChart";
 import axios from "axios";
 import Vue from "vue";
+import basicAlert from "../components/basicAlert.vue";
+import { eventBus } from "../main"
 
 const API_URL = process.env.VUE_APP_API_URL as string;
+
+const fromDate = new Date()
+fromDate.setDate(fromDate.getDate() - 30)
+const atDate = new Date()
+atDate.setDate(fromDate.getDate() + 1)
 
 
 export default Vue.extend({
@@ -193,6 +201,7 @@ export default Vue.extend({
   components: {
     navigationDrawer,
     LineChart,
+    basicAlert
   },
   data(): any {
     return {
@@ -201,8 +210,8 @@ export default Vue.extend({
       labels: [],
       data: [],
 
-      createdAtFromSearch: new Date().toISOString().substr(0, 10),
-      createdAtAtSearch: new Date().toISOString().substr(0, 10),
+      createdAtFromSearch: fromDate.toISOString().substr(0, 10),
+      createdAtAtSearch: atDate.toISOString().substr(0, 10),
       modal: false,
       modal2: false,
 
@@ -230,12 +239,10 @@ export default Vue.extend({
     };
   },
   mounted() {
-    console.log("lol : " + this.$route.params.idProduct)
     if (this.$route.params.idProduct == "" || this.$route.params.idProduct == undefined)
       this.currentProduct = {text: "Tous", value: ""}
     else
       this.currentProduct = {text: "Tous", value: this.$route.params.idProduct}
-    console.log( this.currentProduct)
     this.getProductList()
     this.updateStats(this.currentProduct.value, "", "");
   },
@@ -301,8 +308,7 @@ export default Vue.extend({
           }
         })
         .catch((error) => {
-          alert("Erreur serveur !");
-          console.log("Erreur serveur !");
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
           console.log(error);
         });
     },
@@ -325,8 +331,7 @@ export default Vue.extend({
           }
         })
         .catch((error) => {
-          alert("Erreur serveur !");
-          console.log("Erreur serveur !");
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
           console.log(error.response);
         });
     },

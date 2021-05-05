@@ -101,6 +101,7 @@
           </v-container>
         </v-card>
       </v-container>
+      <basicAlert />
     </v-main>
   </v-app>
 </template>
@@ -133,6 +134,8 @@ body {
 import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
+import basicAlert from "../components/basicAlert.vue";
+import { eventBus } from "../main"
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 
@@ -140,6 +143,7 @@ export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
+    basicAlert
   },
   data() {
     return {
@@ -178,7 +182,7 @@ export default Vue.extend({
           }
         })
         .catch(function (error) {
-          alert("erreur !");
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
           console.log(error);
         });
     },
@@ -193,12 +197,10 @@ export default Vue.extend({
           },
         })
         .then((response) => {
-          alert("L'opération s'est effectué avec succès !")
-          this.$router.push("/listBill")
-
+          eventBus.$emit('openAlert', 'Information', "L'opération s'est effectué avec succès !", '/listBill');
         })
         .catch(function (error) {
-          alert("erreur suppression facture !");
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur suppression facture !', '');
           console.log(error);
         });
     },

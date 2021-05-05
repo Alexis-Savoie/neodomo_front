@@ -74,6 +74,7 @@
           </v-container>
         </v-card>
       </v-container>
+      <basicAlert />
     </v-main>
   </v-app>
 </template>
@@ -106,6 +107,8 @@ body {
 import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
+import basicAlert from "../components/basicAlert.vue";
+import { eventBus } from "../main"
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 
@@ -113,6 +116,7 @@ export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
+    basicAlert
   },
   data() {
     return {
@@ -132,7 +136,7 @@ export default Vue.extend({
     changePassword(oldPassword: string, newPassword: string, confirmPassword: string) {
       if (newPassword != confirmPassword)
       {
-        alert("erreur : les mots de passe ne sont pas identiques !");
+        eventBus.$emit('openAlert', 'Erreur', 'Erreur : les mots de passe ne sont pas identiques !', '');
         this.newPassword = ""
         this.confirmPassword = ""
       }
@@ -145,7 +149,7 @@ export default Vue.extend({
         )
         .then((response) => {
           if (response.status == 201) {
-            alert("Votre mot de passe à été modifié !");
+            eventBus.$emit('openAlert', 'Information', 'Votre mot de passe à été modifié !', '');
             this.oldPassword = ""
             this.newPassword = ""
             this.confirmPassword = ""
@@ -153,7 +157,7 @@ export default Vue.extend({
         })
         .catch((error) => {
           if (error.response.data.message == "Une ou plusieurs données sont erronées") {
-              alert("erreur : longeur de mot de passe trop court/long !");
+              eventBus.$emit('openAlert', 'Erreur', 'Erreur : longeur de mot de passe trop court/long !', '');
               this.oldPassword = ""
               this.newPassword = ""
               this.confirmPassword = ""
@@ -161,11 +165,11 @@ export default Vue.extend({
           }
           else if (error.response.data.message == "Ancien mot de passe incorrect") {
               this.oldPassword = ""
-              alert("erreur : ancien mot de passe incorrect !");
+              eventBus.$emit('openAlert', 'Erreur', 'Erreur : ancien mot de passe incorrect !', '');
               console.log(error);
             }
            else {
-             alert("erreur serveur !");
+             eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
             console.log(error.response);
            }
         });
@@ -180,27 +184,27 @@ export default Vue.extend({
         )
         .then((response) => {
           if (response.status == 201) {
-            alert("L'administrateur à été créer avec succès !");
+            eventBus.$emit('openAlert', 'Information', "L'administrateur à été créer avec succès !", '');
             this.email = ""
             this.password = ""
           }
         })
         .catch((error) => {
           if (error.response.status == 403) {
-              alert("erreur : Erreur de syntaxe email ou mot de passe trop court/long !");
+              eventBus.$emit('openAlert', 'Erreur', 'Erreur : Erreur de syntaxe email ou mot de passe trop court/long !', '');
               this.email = ""
               this.password = ""
               console.log(error);
           }
           else if (error.response.status == 409) {
               this.oldPassword = ""
-              alert("erreur : adresse email déjà utilisé  !");
+              eventBus.$emit('openAlert', 'Erreur', 'Erreur : adresse email déjà utilisé  !', '');
               this.email = ""
               this.password = ""
               console.log(error);
             }
            else {
-             alert("erreur serveur !");
+             eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
             console.log(error.response);
            }
         });

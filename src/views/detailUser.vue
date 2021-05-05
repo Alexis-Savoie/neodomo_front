@@ -242,6 +242,7 @@ import basicAlert from "../components/basicAlert.vue";
 import { eventBus } from "../main"
 import axios from "axios";
 
+
 const API_URL = process.env.VUE_APP_API_URL as string;
 
 export default Vue.extend({
@@ -298,8 +299,6 @@ export default Vue.extend({
           }
         })
         .catch(error => {
-
-
           eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
           console.log(error);
         });
@@ -338,7 +337,7 @@ export default Vue.extend({
           }
         })
         .catch(function (error) {
-          alert("erreur !");
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
           console.log(error);
         });
 
@@ -357,7 +356,7 @@ export default Vue.extend({
           }
         })
         .catch(function (error) {
-          alert("erreur !");
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
           console.log(error);
         });
 
@@ -376,7 +375,7 @@ export default Vue.extend({
           }
         })
         .catch(function (error) {
-          alert("erreur !");
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
           console.log(error);
         });
     },

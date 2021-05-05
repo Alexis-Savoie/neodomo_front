@@ -67,6 +67,7 @@
           </v-container>
         </v-card>
       </v-container>
+      <basicAlert />
     </v-main>
   </v-app>
 </template>
@@ -99,6 +100,8 @@ body {
 import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
+import basicAlert from "../components/basicAlert.vue";
+import { eventBus } from "../main"
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 
@@ -107,6 +110,7 @@ export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
+    basicAlert
   },
   data() {
     return {
@@ -145,14 +149,11 @@ export default Vue.extend({
         })
         .then((response) => {
           if (response.status == 201) {
-             alert("Le produit à été créer avec succès")
-             this.$router.push('/listProduct')
-
+            eventBus.$emit('openAlert', 'Information', 'Le produit à été créer avec succès', '/listProduct');
           }
         })
         .catch(function (error) {
-          alert("erreur !");
-          console.log("erreur lors de la création (Données invalides ?)");
+          eventBus.$emit('openAlert', 'Erreur', 'Erreur lors de la création (Données invalides ?)', '');
           console.log(error);
         });
     },
