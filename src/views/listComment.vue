@@ -202,6 +202,7 @@
           </v-data-table>
         </v-card>
       </v-container>
+      <basicConfirmDelete />
       <basicAlert />
     </v-main>
   </v-app>
@@ -236,6 +237,7 @@ import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
 import basicAlert from "../components/basicAlert.vue";
+import basicConfirmDelete from "../components/basicConfirmDelete.vue";
 import { eventBus } from "../main"
 
 const API_URL = process.env.VUE_APP_API_URL as string;
@@ -249,7 +251,8 @@ export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
-    basicAlert
+    basicAlert,
+    basicConfirmDelete
   },
   data() {
     return {
@@ -338,28 +341,8 @@ export default Vue.extend({
         });
     },
     deleteComment(idComment: string) {
-      if ( confirm( "Êtes-vous sûr de vouloir supprimer ce commentaire ?" ) ) {
-              axios
-        .delete(API_URL + "/admin/deleteComment", {
-          headers: {
-            Authorization: "Bearer " + this.token,
-          },
-          data: {
-            idComment: idComment,
-          },
-        })
-        .then((response) => {
-          location.reload();
-        })
-        .catch(function (error) {
-          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
-          console.log(error.response);
-        });
-    
-      } else {
-          // Code à éxécuter si l'utilisateur clique sur "Annuler" 
-      }
-
+      eventBus.$emit('openConfirm', 'Information', 'Voulez vous supprimer ce commentaire ?', '', '/admin/deleteComment', 'idComment', idComment);
+      
     },
   },
   mounted() {
