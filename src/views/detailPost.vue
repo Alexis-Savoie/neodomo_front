@@ -175,6 +175,14 @@
                   @click="$router.push('/listComment/' + idPost)"
                   >Voir ({{ nbComment }})</v-btn
                 >
+                <v-btn
+                  rounded
+                  class="boutton"
+                  dark
+                  color="#363740"
+                  @click="test()"
+                  >test</v-btn
+                >
               </v-col>
             </v-row>
           </v-container>
@@ -266,8 +274,6 @@ export default Vue.extend({
             this.nbLike = response.data.posts[0].listLike.length;
             this.nbReport = response.data.posts[0].listReport.length;
             this.listImage = response.data.posts[0].listImage;
-            console.log("OK");
-            console.log(this.listImage[0].URL);
           }
         })
         .catch(function (error) {
