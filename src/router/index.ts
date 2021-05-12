@@ -19,6 +19,26 @@ function guardMyroute(to: any, from: any, next: any) {
   }
 }
 
+
+function guardLogin(to: any, from: any, next: any) {
+  let isAuthenticated = false;
+  //this is just an example. You will have to find a better or 
+  // centralised way to handle you localstorage data handling 
+  if (localStorage.getItem('isAuthenticated'))
+    isAuthenticated = true;
+  else
+    isAuthenticated = false;
+  if (isAuthenticated) {
+    next('/listPost'); // allow to enter route
+  }
+  else {
+    next(); // go to '/login';
+  }
+}
+
+
+
+
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
@@ -29,11 +49,13 @@ const routes: Array<RouteConfig> = [
   {
     path: '/login',
     name: 'Login',
+    beforeEnter : guardLogin,
     component: () => import('../views/login.vue')
   },
   {
     path: '/forgotPassword',
     name: 'forgotPassword',
+    beforeEnter : guardLogin,
     component: () => import('../views/forgotPassword.vue')
   },
   {
@@ -125,6 +147,10 @@ const routes: Array<RouteConfig> = [
     name: 'settings',
     beforeEnter : guardMyroute,
     component: () => import('../views/settings.vue')
+  }, 
+  {
+    path :'*',
+    redirect: '/login'
   }
 ]
 
