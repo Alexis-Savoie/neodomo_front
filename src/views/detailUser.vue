@@ -50,8 +50,16 @@
                   >Débloquer</v-btn
                 >
               </v-col>
-              <v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col
-              ><v-col></v-col><v-col></v-col>
+              <v-col>
+                <v-btn
+                  rounded
+                  class="boutton"
+                  dark
+                  color="#363740"
+                  @click="deleteUser()"
+                  >Supprimer</v-btn
+                > </v-col>
+                <v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col>
             </v-row>
             <v-row>
               <v-divider></v-divider>
@@ -196,8 +204,7 @@
                       >Commentaires ({{ nbReportComment }})</v-btn
                     >
 
-                  <basicAlert />
-                    
+                    <basicAlert />
                   </v-col>
                   <v-col></v-col>
                 </v-row>
@@ -239,9 +246,8 @@ body {
 import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
 import basicAlert from "../components/basicAlert.vue";
-import { eventBus } from "../main"
+import { eventBus } from "../main";
 import axios from "axios";
-
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 
@@ -249,7 +255,7 @@ export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
-    basicAlert
+    basicAlert,
   },
   data() {
     return {
@@ -273,11 +279,9 @@ export default Vue.extend({
       nbReportComment: 0,
 
       itemsSelectAccountType: ["Tous", "eleve", "association", "staff"],
-
     };
   },
   methods: {
-
     getUser(emailUser: string) {
       axios
         .post(
@@ -298,8 +302,8 @@ export default Vue.extend({
             this.isBlocked = response.data.users[0].isBlocked;
           }
         })
-        .catch(error => {
-          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
+        .catch((error) => {
+          eventBus.$emit("openAlert", "Erreur", "Erreur serveur !", "");
           console.log(error);
         });
     },
@@ -317,8 +321,8 @@ export default Vue.extend({
             else this.nbPost = 0;
           }
         })
-        .catch(error => {
-          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
+        .catch((error) => {
+          eventBus.$emit("openAlert", "Erreur", "Erreur serveur !", "");
           console.log(error);
         });
 
@@ -337,7 +341,7 @@ export default Vue.extend({
           }
         })
         .catch(function (error) {
-          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
+          eventBus.$emit("openAlert", "Erreur", "Erreur serveur !", "");
           console.log(error);
         });
 
@@ -356,7 +360,7 @@ export default Vue.extend({
           }
         })
         .catch(function (error) {
-          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
+          eventBus.$emit("openAlert", "Erreur", "Erreur serveur !", "");
           console.log(error);
         });
 
@@ -375,7 +379,7 @@ export default Vue.extend({
           }
         })
         .catch(function (error) {
-          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
+          eventBus.$emit("openAlert", "Erreur", "Erreur serveur !", "");
           console.log(error);
         });
     },
@@ -393,11 +397,21 @@ export default Vue.extend({
         })
         .then((response) => {
           if (response.status == 200) {
-            eventBus.$emit('openAlert', "Information", "Mise à jour de l'utilisateur réussit !", '/listUser');
+            eventBus.$emit(
+              "openAlert",
+              "Information",
+              "Mise à jour de l'utilisateur réussit !",
+              "/listUser"
+            );
           }
         })
-        .catch(error => {
-          eventBus.$emit('openAlert', 'Erreur', "Erreur mise à jour utilisateur !", '');
+        .catch((error) => {
+          eventBus.$emit(
+            "openAlert",
+            "Erreur",
+            "Erreur mise à jour utilisateur !",
+            ""
+          );
           console.log(error);
         });
     },
@@ -411,15 +425,58 @@ export default Vue.extend({
         )
         .then((response) => {
           if (response.status == 200) {
-            console.log("")
+            console.log("");
             if (this.isBlocked == false)
-              eventBus.$emit('openAlert', 'Information', "L'utilisateur à été bloqué avec succès", '/listUser');
-            else 
-              eventBus.$emit('openAlert', 'Information', "L'utilisateur à été débloqué avec succès", '/listUser');
+              eventBus.$emit(
+                "openAlert",
+                "Information",
+                "L'utilisateur à été bloqué avec succès",
+                "/listUser"
+              );
+            else
+              eventBus.$emit(
+                "openAlert",
+                "Information",
+                "L'utilisateur à été débloqué avec succès",
+                "/listUser"
+              );
           }
         })
-        .catch(error => {
-          eventBus.$emit('openAlert', 'Erreur', "Erreur blocage utilisateur !", '');
+        .catch((error) => {
+          eventBus.$emit(
+            "openAlert",
+            "Erreur",
+            "Erreur blocage utilisateur !",
+            ""
+          );
+          console.log(error);
+        });
+    },
+    deleteUser(idUser: string) {
+      axios
+        .delete(API_URL + "/admin/deleteUser", {
+          headers: {
+            Authorization: "Bearer " + this.token,
+          },
+          data: {
+            idUser: this.idUser,
+          },
+        })
+        .then((response) => {
+          eventBus.$emit(
+            "openAlert",
+            "Information",
+            "L'opération s'est effectué avec succès !",
+            "/listUser"
+          );
+        })
+        .catch(function (error) {
+          eventBus.$emit(
+            "openAlert",
+            "Erreur",
+            "Erreur suppression utilisateur !",
+            ""
+          );
           console.log(error);
         });
     },
@@ -429,7 +486,6 @@ export default Vue.extend({
     this.emailUser = this.$route.params.emailUser;
     this.getUser(this.emailUser);
     this.getUserStat(this.emailUser);
-    
   },
 });
 </script>
