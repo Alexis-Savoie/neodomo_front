@@ -120,7 +120,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item link @click="Logout">
+      <v-list-item id="logoutButton" link @click="Logout">
         <v-list-item-icon>
           <v-icon color="#A4A6B3">mdi-logout</v-icon>
         </v-list-item-icon>

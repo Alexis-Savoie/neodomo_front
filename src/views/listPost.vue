@@ -48,6 +48,7 @@
                     <v-text-field
                       solo
                       dense
+                      id="emailPublisherInput"
                       label="Créateur"
                       rounded
                       class="shrink"

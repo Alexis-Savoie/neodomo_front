@@ -12,12 +12,14 @@
           >
           <v-card-text>
             <v-text-field
+              id="emailInput"
               solo
               label="Email"
               prepend-icon="mdi-account-circle"
               v-model="email"
             />
             <v-text-field
+              id="passwordInput"
               solo
               label="Mot de passe"
               type="password"
@@ -28,7 +30,7 @@
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn rounded class="boutton" dark color="#363740" @click="Login"
+            <v-btn id="loginButton" rounded class="boutton" dark color="#363740" @click="Login"
               >Connexion</v-btn
             >
             <v-spacer></v-spacer>
@@ -36,6 +38,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
+              id="forgotPasswordButton"
               plain
               class="mx-auto"
               color="blue"
