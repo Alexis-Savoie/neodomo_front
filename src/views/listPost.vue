@@ -3,7 +3,7 @@
     <v-app-bar app flat color="#E5E5E5">
       <v-toolbar-title style="padding-left: 2em">Posts</v-toolbar-title>
       <v-spacer></v-spacer>
-      <div>{{ emailAdmin }}</div>
+      <div id="currentAdmin">{{ emailAdmin }}</div>
     </v-app-bar>
     <navigationDrawer />
 
@@ -24,7 +24,7 @@
                 <v-toolbar-title style="padding-right: 0.5em"
                   >Liste des posts</v-toolbar-title
                 >
-                <v-icon
+                <v-icon id="refreshButton"
                   @click="
                     searchPost(
                       '',
@@ -164,7 +164,7 @@
             </template>
 -->
             <template v-slot:[`item.actions`]="t">
-              <v-icon
+              <v-icon class="actionButton"
                 small
                 v-if="t.item.idPost != undefined"
                 @click="$router.push('/detailPost/' + t.item.idPost)"
@@ -226,7 +226,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      emailAdmin: localStorage.getItem("emalToken") || "",
+      emailAdmin: localStorage.getItem("emailAdmin") || "",
       token: localStorage.getItem("token") || "", 
 
       emailPublisherSearch: "",

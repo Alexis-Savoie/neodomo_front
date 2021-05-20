@@ -14,9 +14,7 @@
           <v-container fill-height>
             <v-row>
               <v-col>
-              <v-toolbar-title style="padding-left: 12px"
-                >Détails des paramètres</v-toolbar-title
-              >
+              <v-toolbar-title style="padding-left: 12px">Détails des paramètres</v-toolbar-title>
               <hr />
               </v-col>
             </v-row>
@@ -25,6 +23,7 @@
               <v-col>
                 <v-card-text>Modifier votre mot de passe</v-card-text>
                 <v-text-field
+                  id="oldPasswordInput"
                   solo
                   dense
                   label="Mot de passe actuel"
@@ -33,6 +32,7 @@
                   v-model="oldPassword"
                 ></v-text-field>
                 <v-text-field
+                  id="newPasswordInput"
                   solo
                   dense
                   label="Nouveau mot de passe"
@@ -41,6 +41,7 @@
                   v-model="newPassword"
                 ></v-text-field>
                 <v-text-field
+                  id="confirmPasswordInput"
                   solo
                   dense
                   label="Confirmer mot de passe"
@@ -48,7 +49,7 @@
                   type="password"
                   v-model="confirmPassword"
                 ></v-text-field>
-                <v-btn rounded class="boutton" dark color="#363740" @click="changePassword(oldPassword, newPassword, confirmPassword)">Soumettre</v-btn>
+                <v-btn id="changePasswordButton" rounded class="boutton" dark color="#363740" @click="changePassword(oldPassword, newPassword, confirmPassword)">Soumettre</v-btn>
               </v-col>
               <v-divider vertical></v-divider>
               <v-col>

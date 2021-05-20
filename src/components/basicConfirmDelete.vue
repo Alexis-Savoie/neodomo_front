@@ -1,5 +1,5 @@
 <template>
-  <v-dialog persistent v-model="dialogConfirm" max-width="600">
+  <v-dialog id="basicConfirmDelete" persistent v-model="dialogConfirm" max-width="600">
     <v-card>
       <v-toolbar color="#363740" dark>{{ dialogTitleConfirm }}</v-toolbar>
       <v-card-text>

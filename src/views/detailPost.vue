@@ -69,6 +69,7 @@
                 ></v-text-field>
                 <v-card-text class="text-center">Auteur</v-card-text>
                 <v-text-field
+                  id="emailPublisherInput"
                   class="centered-input"
                   solo
                   dense
@@ -174,14 +175,6 @@
                   color="#363740"
                   @click="$router.push('/listComment/' + idPost)"
                   >Voir ({{ nbComment }})</v-btn
-                >
-                <v-btn
-                  rounded
-                  class="boutton"
-                  dark
-                  color="#363740"
-                  @click="test()"
-                  >test</v-btn
                 >
               </v-col>
             </v-row>

@@ -1,12 +1,12 @@
 <template>
-  <v-dialog persistent v-model="dialog" max-width="600">
+  <v-dialog id="basicAlert" persistent v-model="dialog" max-width="600">
     <v-card>
       <v-toolbar color="#363740" dark>{{ dialogTitle }}</v-toolbar>
       <v-card-text>
         <div class="text-h5 pa-12">{{ dialogContent }}</div>
       </v-card-text>
       <v-card-actions class="justify-end">
-        <v-btn text @click="goTo(goToRoute)">Fermer</v-btn>
+        <v-btn id="closeButton" text @click="goTo(goToRoute)">Fermer</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
