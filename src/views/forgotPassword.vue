@@ -54,6 +54,7 @@ body {
 <script lang="ts">
 import Vue from "vue";
 import axios from "axios";
+import validator from 'validator';
 import basicAlert from "../components/basicAlert.vue";
 import { eventBus } from "../main"
 
@@ -73,7 +74,11 @@ export default Vue.extend({
       email: string,
     ) {
 
-      axios
+      if (validator.isEmail(email)) {
+        eventBus.$emit('openAlert', 'Erreur', 'Erreur ! Email invalide ou inexistant !', '');
+      }
+      else {
+              axios
         .post(API_URL + "/admin/forgotPassword", { email: email })
         .then((response) => {
           if (response.status == 200) {
@@ -84,6 +89,8 @@ export default Vue.extend({
           eventBus.$emit('openAlert', 'Erreur', 'Erreur ! Email invalide ou inexistant !', '');
           console.log(error);
         });
+      } 
+
     },
   },
 });

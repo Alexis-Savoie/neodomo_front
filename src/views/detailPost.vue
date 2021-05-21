@@ -218,6 +218,7 @@ body {
 import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
+
 import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
 import basicAlert from "../components/basicAlert.vue";

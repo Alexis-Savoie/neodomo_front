@@ -58,8 +58,11 @@
                   color="#363740"
                   @click="deleteUser()"
                   >Supprimer</v-btn
-                > </v-col>
-                <v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col>
+                >
+              </v-col>
+              <v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col
+              ><v-col></v-col><v-col></v-col><v-col></v-col><v-col></v-col
+              ><v-col></v-col>
             </v-row>
             <v-row>
               <v-divider></v-divider>
@@ -248,6 +251,7 @@ import navigationDrawer from "../components/navigationDrawer.vue";
 import basicAlert from "../components/basicAlert.vue";
 import { eventBus } from "../main";
 import axios from "axios";
+import validator from "validator";
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 
@@ -384,36 +388,50 @@ export default Vue.extend({
         });
     },
     updateUser() {
-      const parameters = {
-        email: this.emailUser,
-        firstname: this.firstname,
-        lastname: this.lastname,
-        accountType: this.accountType,
-        status: this.status,
-      };
-      axios
-        .put(API_URL + "/admin/editUser", parameters, {
-          headers: { Authorization: "Bearer " + this.token },
-        })
-        .then((response) => {
-          if (response.status == 200) {
+      if (
+        validator.isEmail(this.emailUser) &&
+        validator.isLength(this.firstname, { min: 2, max: 25 }) &&
+        validator.isLength(this.lastname, { min: 2, max: 25 }) &&
+        validator.isEmpty(this.status) == false
+      ) {
+        const parameters = {
+          email: this.emailUser,
+          firstname: this.firstname,
+          lastname: this.lastname,
+          accountType: this.accountType,
+          status: this.status,
+        };
+        axios
+          .put(API_URL + "/admin/editUser", parameters, {
+            headers: { Authorization: "Bearer " + this.token },
+          })
+          .then((response) => {
+            if (response.status == 200) {
+              eventBus.$emit(
+                "openAlert",
+                "Information",
+                "Mise à jour de l'utilisateur réussit !",
+                "/listUser"
+              );
+            }
+          })
+          .catch((error) => {
             eventBus.$emit(
               "openAlert",
-              "Information",
-              "Mise à jour de l'utilisateur réussit !",
-              "/listUser"
+              "Erreur",
+              "Erreur mise à jour utilisateur !",
+              ""
             );
-          }
-        })
-        .catch((error) => {
-          eventBus.$emit(
-            "openAlert",
-            "Erreur",
-            "Erreur mise à jour utilisateur !",
-            ""
-          );
-          console.log(error);
-        });
+            console.log(error);
+          });
+      } else {
+        eventBus.$emit(
+          "openAlert",
+          "Erreur",
+          "Erreur mise à jour utilisateur ! (Données invalide)",
+          ""
+        );
+      }
     },
 
     blockUser() {

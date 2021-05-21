@@ -3,7 +3,7 @@
     <v-app-bar app flat color="#E5E5E5">
       <v-toolbar-title style="padding-left: 2em">Stocks</v-toolbar-title>
       <v-spacer></v-spacer>
-      <div >{{ emailAdmin }}</div>
+      <div>{{ emailAdmin }}</div>
     </v-app-bar>
     <navigationDrawer />
 
@@ -113,7 +113,6 @@
                   @click="$router.push('/statSales/' + idProduct)"
                   >Voir</v-btn
                 >
-                
               </v-col>
             </v-row>
           </v-container>
@@ -152,21 +151,21 @@ body {
 import Vue from "vue";
 import navigationDrawer from "../components/navigationDrawer.vue";
 import axios from "axios";
+import validator from "validator";
 import basicAlert from "../components/basicAlert.vue";
-import { eventBus } from "../main"
+import { eventBus } from "../main";
 
 const API_URL = process.env.VUE_APP_API_URL as string;
-
 
 export default Vue.extend({
   name: "App",
   components: {
     navigationDrawer,
-    basicAlert
+    basicAlert,
   },
   data() {
     return {
-      emailAdmin:  localStorage.getItem("emailAdmin") || "",
+      emailAdmin: localStorage.getItem("emailAdmin") || "",
       token: localStorage.getItem("token") || "",
 
       idProduct: "",
@@ -174,8 +173,7 @@ export default Vue.extend({
       description: "",
       price: "",
       availableStock: "",
-      nbBill: ""
-
+      nbBill: "",
     };
   },
   methods: {
@@ -187,18 +185,17 @@ export default Vue.extend({
           { headers: { Authorization: "Bearer " + this.token } }
         )
         .then((response) => {
-          console.log(response.data)
+          console.log(response.data);
           if (response.data.message == "succès (non-vide)") {
             this.nameProduct = response.data.products[0].nameProduct;
             this.description = response.data.products[0].description;
             this.price = response.data.products[0].price;
             this.availableStock = response.data.products[0].availableStock;
             this.nbBill = response.data.products[0].listBill.length;
-
           }
         })
         .catch(function (error) {
-          eventBus.$emit('openAlert', 'Erreur', 'Erreur serveur !', '');
+          eventBus.$emit("openAlert", "Erreur", "Erreur serveur !", "");
           console.log(error);
         });
     },
@@ -213,36 +210,70 @@ export default Vue.extend({
           },
         })
         .then((response) => {
-          eventBus.$emit('openAlert', 'Information', "L'opération s'est effectué avec succès !", '/listPost');
+          eventBus.$emit(
+            "openAlert",
+            "Information",
+            "L'opération s'est effectué avec succès !",
+            "/listPost"
+          );
         })
         .catch(function (error) {
-          eventBus.$emit('openAlert', 'Erreur', 'Erreur suppression post !', '');
+          eventBus.$emit(
+            "openAlert",
+            "Erreur",
+            "Erreur suppression post !",
+            ""
+          );
           console.log(error);
         });
     },
     updateProduct(idProduct: string) {
-      const parameters = {
-        idProduct: this.idProduct,
-        nameProduct: this.nameProduct,
-        description: this.description,
-        price: this.price,
-        availableStock: this.availableStock,
+      if (
+        validator.isMongoId(this.idProduct) &&
+        validator.isEmpty(this.nameProduct) == false &&
+        validator.isEmpty(this.description) == false &&
+        isNaN(parseInt(this.price)) == false &&
+        isNaN(parseInt(this.availableStock)) == false
+      ) {
+        const parameters = {
+          idProduct: this.idProduct,
+          nameProduct: this.nameProduct,
+          description: this.description,
+          price: this.price,
+          availableStock: this.availableStock,
+        };
+        axios
+          .put(API_URL + "/admin/editProduct", parameters, {
+            headers: { Authorization: "Bearer " + this.token },
+          })
+          .then((response) => {
+            if (response.status == 200) {
+              eventBus.$emit(
+                "openAlert",
+                "Information",
+                "Mise à jour du produit réussite !",
+                ""
+              );
+            }
+          })
+          .catch(function (error) {
+            eventBus.$emit(
+              "openAlert",
+              "Erreur",
+              "Erreur mise à jour produit !",
+              ""
+            );
+            console.log(error);
+          });
       }
-      axios
-        .put(
-          API_URL + "/admin/editProduct",
-          parameters,
-          { headers: { Authorization: "Bearer " + this.token } }
-        )
-        .then((response) => {
-          if (response.status == 200) {
-            eventBus.$emit('openAlert', 'Information', 'Mise à jour du produit réussite !', '');
-          }
-        })
-        .catch(function (error) {
-          eventBus.$emit('openAlert', 'Erreur', 'Erreur mise à jour produit !', '');
-          console.log(error);
-        });
+      else {
+        eventBus.$emit(
+              "openAlert",
+              "Erreur",
+              "Erreur mise à jour produit ! (Données invalide)",
+              ""
+            );
+      }
     },
   },
   created() {

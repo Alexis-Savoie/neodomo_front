@@ -30,7 +30,13 @@
           <v-divider></v-divider>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn id="loginButton" rounded class="boutton" dark color="#363740" @click="Login"
+            <v-btn
+              id="loginButton"
+              rounded
+              class="boutton"
+              dark
+              color="#363740"
+              @click="Login"
               >Connexion</v-btn
             >
             <v-spacer></v-spacer>
@@ -62,8 +68,9 @@
 import Vue from "vue";
 import router from "../router";
 import axios from "axios";
+import validator from "validator";
 import basicAlert from "../components/basicAlert.vue";
-import { eventBus } from "../main"
+import { eventBus } from "../main";
 
 const API_URL = process.env.VUE_APP_API_URL as string;
 
@@ -80,36 +87,66 @@ export default Vue.extend({
   methods: {
     Login() {
       if (this.email == "" || this.password == "")
-        eventBus.$emit('openAlert', 'Erreur', 'Veuillez rentrez des identifiants !', '');
+        eventBus.$emit(
+          "openAlert",
+          "Erreur",
+          "Veuillez rentrez des identifiants !",
+          ""
+        );
       else {
-        axios
-          .post(API_URL + "/admin/login", {
-            email: this.email,
-            password: this.password,
-          })
-          .then((response) => {
-            if(response.status == 200)
-            {
-              localStorage.setItem('token', response.data.token.toString())
-              localStorage.setItem('isAuthenticated', "true")
-              localStorage.setItem('emailAdmin', this.email)
-              
-              router.push("/listPost");
-            }
-          })
-          .catch(function (error) {
-            if (error.response.status == 403) {
-              eventBus.$emit('openAlert', 'Erreur', 'Syntaxe des identifiants invalide !', '');
-            }
-            if (error.response.status == 400) {
-              if (error.response.data.message != "Identifiants incorrect") {
-                eventBus.$emit('openAlert', 'Erreur', 'Trop de tentatives ! réessayer plus tard', '');
+        if (
+          validator.isEmail(this.email) == false ||
+          validator.isLength(this.password, { min: 8, max: 50 }) == false
+        ) {
+          eventBus.$emit(
+            "openAlert",
+            "Erreur",
+            "Syntaxe des identifiants invalide !",
+            ""
+          );
+        } else {
+          axios
+            .post(API_URL + "/admin/login", {
+              email: this.email,
+              password: this.password,
+            })
+            .then((response) => {
+              if (response.status == 200) {
+                localStorage.setItem("token", response.data.token.toString());
+                localStorage.setItem("isAuthenticated", "true");
+                localStorage.setItem("emailAdmin", this.email);
+
+                router.push("/listPost");
               }
-              else {
-                eventBus.$emit('openAlert', 'Erreur', 'Identifiants incorrect !', '');
+            })
+            .catch(function (error) {
+              if (error.response.status == 403) {
+                eventBus.$emit(
+                  "openAlert",
+                  "Erreur",
+                  "Syntaxe des identifiants invalide !",
+                  ""
+                );
               }
-            }
-          });
+              if (error.response.status == 400) {
+                if (error.response.data.message != "Identifiants incorrect") {
+                  eventBus.$emit(
+                    "openAlert",
+                    "Erreur",
+                    "Trop de tentatives ! réessayer plus tard",
+                    ""
+                  );
+                } else {
+                  eventBus.$emit(
+                    "openAlert",
+                    "Erreur",
+                    "Identifiants incorrect !",
+                    ""
+                  );
+                }
+              }
+            });
+        }
       }
     },
   },
